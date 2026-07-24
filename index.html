@@ -55,10 +55,10 @@
   .hero h1 span{color:var(--gold);}
   .hero p{color:var(--text-muted);font-size:14px;line-height:1.7;margin:0 auto 24px;max-width:520px;}
 
-  .search{display:flex;gap:8px;max-width:560px;margin:0 auto 20px;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:6px;}
-  .search input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:14px;padding:10px 12px;}
+  .search{display:flex;align-items:center;gap:8px;max-width:560px;margin:0 auto 20px;background:var(--bg-panel);border:1px solid var(--border);border-radius:999px;padding:6px 6px 6px 18px;}
+  .search input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:14px;padding:10px 0;}
   .search input::placeholder{color:var(--text-faint);}
-  .search button{background:var(--gold);color:#1A1207;border:none;border-radius:8px;padding:0 20px;font-family:var(--font-display);font-weight:600;font-size:14px;cursor:pointer;transition:filter .15s;}
+  .search button{background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:12px 22px;font-family:var(--font-display);font-weight:600;font-size:14px;cursor:pointer;transition:filter .15s;white-space:nowrap;flex-shrink:0;}
   .search button:hover{filter:brightness(1.08);}
 
   .stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);margin-bottom:24px;}
@@ -182,6 +182,18 @@
   footer{border-top:1px solid var(--border);padding:22px 32px;font-size:11.5px;color:var(--text-faint);line-height:1.7;}
 
   .filter-fab{display:none;}
+  .back-to-top{
+    display:flex;align-items:center;gap:6px;
+    position:fixed;right:18px;bottom:18px;z-index:44;
+    background:var(--bg-panel-hi);color:var(--text-muted);
+    border:1px solid var(--border);border-radius:999px;
+    padding:11px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;
+    box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer;
+    opacity:0;visibility:hidden;transform:translateY(8px);
+    transition:opacity .2s ease, transform .2s ease, visibility .2s, border-color .15s, color .15s;
+  }
+  .back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0);}
+  .back-to-top:hover{color:var(--text);border-color:var(--text-muted);}
   .filter-backdrop{display:none;}
   .filter-sheet-header{display:none;}
   .filter-sheet-apply{display:none;}
@@ -190,12 +202,16 @@
     .nav__links{display:none;}
     .hero{padding:44px 16px 28px;}
     .hero p{font-size:13px;}
+    .search{padding:5px 5px 5px 14px;}
+    .search input{font-size:13.5px;}
+    .search button{padding:11px 16px;font-size:13px;}
     .results-head, .list, .map-section{padding-left:16px;padding-right:16px;}
     .row__label{width:auto;margin-right:2px;font-size:14px;}
     .sheet-panel__row{flex-direction:column;}
 
     /* 篩選浮動按鈕 */
     .filter-fab{display:flex;align-items:center;gap:7px;position:fixed;right:18px;bottom:18px;z-index:45;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:13px 20px;font-family:var(--font-display);font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(242,169,61,.4);cursor:pointer;transition:opacity .15s, visibility .15s;}
+    .back-to-top{bottom:78px;padding:10px 16px;font-size:12.5px;}
     .filter-fab.is-hidden{opacity:0;visibility:hidden;pointer-events:none;}
     .filter-fab__badge{background:#1A1207;color:var(--gold);border-radius:999px;font-size:11px;font-family:var(--font-mono);padding:1px 7px;min-width:16px;text-align:center;}
 
@@ -276,6 +292,10 @@
 </header>
 
 <div class="filter-backdrop" id="filterBackdrop"></div>
+<button class="back-to-top" id="backToTopBtn" aria-label="回到頂端">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  回到頂端
+</button>
 <button class="filter-fab" id="filterFab">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 5h18M6 12h12M10 19h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
   篩選
@@ -1026,6 +1046,19 @@ rebuildRestUI();
 rebuildCityUI();
 renderStats();
 update();
+
+// 回到頂端按鈕:捲動超過一段距離才出現,點擊平滑捲回最上方
+(function(){
+  const btn = document.getElementById('backToTopBtn');
+  if(!btn) return;
+  const SHOW_AFTER = 500;
+  window.addEventListener('scroll', ()=>{
+    btn.classList.toggle('visible', window.scrollY > SHOW_AFTER);
+  }, { passive: true });
+  btn.addEventListener('click', ()=>{
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
 
 // 桌面版:捲動到地圖區塊時自動收合篩選列,捲回卡片區時自動展開(手機版走底部滑出面板,不受影響)
 (function(){
