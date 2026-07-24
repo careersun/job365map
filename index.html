@@ -182,7 +182,8 @@
     .sheet-panel__row{flex-direction:column;}
 
     /* 篩選浮動按鈕 */
-    .filter-fab{display:flex;align-items:center;gap:7px;position:fixed;right:18px;bottom:18px;z-index:45;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:13px 20px;font-family:var(--font-display);font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(242,169,61,.4);cursor:pointer;}
+    .filter-fab{display:flex;align-items:center;gap:7px;position:fixed;right:18px;bottom:18px;z-index:45;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:13px 20px;font-family:var(--font-display);font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(242,169,61,.4);cursor:pointer;transition:opacity .15s, visibility .15s;}
+    .filter-fab.is-hidden{opacity:0;visibility:hidden;pointer-events:none;}
     .filter-fab__badge{background:#1A1207;color:var(--gold);border-radius:999px;font-size:11px;font-family:var(--font-mono);padding:1px 7px;min-width:16px;text-align:center;}
 
     /* 背景遮罩 */
@@ -212,7 +213,7 @@
     .row--actions .clear-btn{width:100%;text-align:center;font-size:14px;}
 
     .filter-sheet-header{position:relative;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:19px;padding:16px 0 14px;margin:-16px -16px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-panel);text-align:center;border-radius:22px 22px 0 0;}
-    .filter-sheet-close{position:absolute;right:0;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:4px;}
+    .filter-sheet-close{position:absolute;right:10px;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:8px;}
 
     .filter-sheet-apply{display:block;position:sticky;bottom:0;background:var(--bg-panel);padding-top:12px;margin-top:12px;border-top:1px solid var(--border);}
     .filter-sheet-apply button{width:100%;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:15px;font-family:var(--font-display);font-weight:600;font-size:16px;cursor:pointer;}
@@ -488,10 +489,12 @@ document.getElementById('remoteOnly').addEventListener('change', e=>{ state.remo
 function openFilterSheet(){
   document.getElementById('filterbar').classList.add('open');
   document.getElementById('filterBackdrop').classList.add('open');
+  document.getElementById('filterFab').classList.add('is-hidden');
 }
 function closeFilterSheet(){
   document.getElementById('filterbar').classList.remove('open');
   document.getElementById('filterBackdrop').classList.remove('open');
+  document.getElementById('filterFab').classList.remove('is-hidden');
 }
 document.getElementById('filterFab').addEventListener('click', openFilterSheet);
 document.getElementById('filterBackdrop').addEventListener('click', closeFilterSheet);
