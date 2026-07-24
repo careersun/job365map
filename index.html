@@ -209,12 +209,14 @@
       gap:0;
     }
     .filterbar__scroll{
-      display:block;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
       flex:1 1 auto;
       min-height:0; /* 讓 flex 子項目能正確被裁切捲動,而不是把父層撐開 */
       overflow-y:auto;
       -webkit-overflow-scrolling:touch;
-      padding:16px 16px 12px;
+      padding:18px 16px 12px;
     }
     .filterbar.open{bottom:0;}
     .filterbar .tab, .filterbar .chip{font-size:15px;padding:9px 16px;}
