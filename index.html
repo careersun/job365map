@@ -202,12 +202,16 @@
       z-index:50;
       background:var(--bg-panel); /* 改成跟標題列一致的不透明底色,不再用半透明毛玻璃,避免色塊對不齊 */
       backdrop-filter:none;
-      overflow:hidden; /* 只負責圓角裁切,捲動交給內層,避免圓角處露出內容 */
+      overflow:hidden; /* 只負責圓角裁切 */
       padding:0; /* 覆蓋桌面版殘留的 padding:16px 32px,否則外框跟內層寬度會對不齊 */
+      display:flex;
+      flex-direction:column;
+      gap:0;
     }
     .filterbar__scroll{
       display:block;
-      max-height:82vh;
+      flex:1 1 auto;
+      min-height:0; /* 讓 flex 子項目能正確被裁切捲動,而不是把父層撐開 */
       overflow-y:auto;
       -webkit-overflow-scrolling:touch;
       padding:16px 16px 12px;
@@ -220,10 +224,10 @@
     .row--actions .remote-toggle{margin-left:0;justify-content:flex-start;font-size:15px;}
     .row--actions .clear-btn{width:100%;text-align:center;font-size:14px;}
 
-    .filter-sheet-header{position:relative;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:19px;padding:16px 0 14px;margin:-16px -16px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-panel);text-align:center;border-radius:22px 22px 0 0;}
+    .filter-sheet-header{position:relative;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:19px;padding:16px 16px 14px;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--bg-panel);text-align:center;}
     .filter-sheet-close{position:absolute;right:10px;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;padding:8px;}
 
-    .filter-sheet-apply{display:block;position:sticky;bottom:0;background:var(--bg-panel);padding-top:12px;margin-top:12px;border-top:1px solid var(--border);}
+    .filter-sheet-apply{display:block;flex-shrink:0;background:var(--bg-panel);padding:12px 16px calc(12px + env(safe-area-inset-bottom, 0px));border-top:1px solid var(--border);}
     .filter-sheet-apply button{width:100%;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:15px;font-family:var(--font-display);font-weight:600;font-size:16px;cursor:pointer;}
   }
 </style>
@@ -265,11 +269,11 @@
 </button>
 
 <div class="filterbar" id="filterbar">
-  <div class="filterbar__scroll">
   <div class="filter-sheet-header">
     <span>篩選條件</span>
     <button class="filter-sheet-close" id="filterSheetClose" aria-label="關閉">✕</button>
   </div>
+  <div class="filterbar__scroll">
   <div class="row" id="regionRow">
     <span class="row__label">地區</span>
     <select class="tab" id="cityFilter" style="cursor:pointer;"><option value="all">全部縣市</option></select>
@@ -283,9 +287,9 @@
     <label class="remote-toggle"><input type="checkbox" id="remoteOnly"> 只看可遠端</label>
     <button class="clear-btn" id="clearBtn">清除全部篩選</button>
   </div>
+  </div>
   <div class="filter-sheet-apply">
     <button id="filterApplyBtn">顯示 <span id="applyCount">0</span> 筆結果</button>
-  </div>
   </div>
 </div>
 
