@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOB365 後台管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151C; --bg-panel:#191E27; --bg-panel-hi:#212838; --border:#2A3140;
+    --text:#ECEDEF; --text-muted:#8B93A1; --text-faint:#5B6273;
+    --gold:#F2A93D; --teal:#4FBFAE; --coral:#E8674A; --periwinkle:#7C93F2; --violet:#C77DFF;
+    --font-display:'Space Grotesk',sans-serif; --font-mono:'JetBrains Mono',monospace; --font-body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+  a{color:inherit;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--border);}
+  .topbar__title{font-family:var(--font-display);font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px;}
+  .topbar__title .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);}
+  .topbar__actions{display:flex;gap:10px;}
+
+  .btn{font-family:var(--font-display);font-weight:600;font-size:13px;border-radius:9px;padding:10px 16px;cursor:pointer;border:1px solid var(--border);background:var(--bg-panel);color:var(--text);transition:all .15s;}
+  .btn:hover{border-color:var(--text-muted);}
+  .btn--primary{background:var(--gold);color:#1A1207;border-color:var(--gold);}
+  .btn--primary:hover{filter:brightness(1.08);}
+  .btn--danger{background:rgba(232,103,74,.12);color:var(--coral);border-color:rgba(232,103,74,.3);}
+  .btn--danger:hover{background:rgba(232,103,74,.2);}
+  .btn--sm{padding:6px 11px;font-size:12px;}
+
+  /* ---- 登入畫面 ---- */
+  .login-wrap{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-card{width:100%;max-width:420px;background:var(--bg-panel);border:1px solid var(--border);border-radius:16px;padding:32px;}
+  .login-card h1{font-family:var(--font-display);font-size:20px;margin:0 0 6px;}
+  .login-card p{color:var(--text-muted);font-size:13px;line-height:1.7;margin:0 0 24px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;color:var(--text-muted);margin-bottom:6px;font-family:var(--font-mono);}
+  .field input, .field textarea, .field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:14px;padding:10px 12px;outline:none;}
+  .field input:focus, .field textarea:focus, .field select:focus{border-color:var(--periwinkle);}
+  .field textarea{min-height:70px;resize:vertical;}
+  .field__hint{font-size:11.5px;color:var(--text-faint);margin-top:5px;line-height:1.6;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;}
+  .checkbox-row input{width:auto;}
+  .status-msg{margin-top:14px;font-size:13px;font-family:var(--font-mono);min-height:18px;}
+  .status-msg.error{color:var(--coral);}
+  .status-msg.ok{color:var(--teal);}
+
+  /* ---- 主畫面 ---- */
+  .main{padding:24px 28px 60px;max-width:1200px;margin:0 auto;}
+  .main-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+  .main-head h2{font-family:var(--font-display);font-size:18px;margin:0;}
+  .main-head__count{color:var(--text-muted);font-size:13px;font-family:var(--font-mono);}
+
+  table{width:100%;border-collapse:collapse;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:13px;}
+  thead th{text-align:left;background:var(--bg-panel-hi);color:var(--text-muted);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:11px 14px;border-bottom:1px solid var(--border);}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(255,255,255,.02);}
+  .cell-title{font-weight:600;}
+  .cell-muted{color:var(--text-faint);font-size:12px;}
+  .row-actions{display:flex;gap:6px;white-space:nowrap;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--text-faint);}
+
+  /* ---- 新增/編輯彈窗 ---- */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;z-index:50;}
+  .modal-backdrop.open{display:flex;}
+  .modal{width:100%;max-width:640px;background:var(--bg-panel);border:1px solid var(--border);border-radius:16px;padding:26px;}
+  .modal h3{font-family:var(--font-display);font-size:17px;margin:0 0 18px;}
+  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .modal-grid .field--full{grid-column:1/-1;}
+  .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+
+  @media (max-width:640px){
+    .modal-grid{grid-template-columns:1fr;}
+    .main{padding:18px 14px 60px;}
+    table, thead, tbody, th, td, tr{display:block;}
+    thead{display:none;}
+    tbody tr{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;padding:10px;}
+    tbody td{border:none;padding:6px 4px;}
+    tbody td::before{content:attr(data-label);display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);text-transform:uppercase;margin-bottom:2px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 登入畫面 ============ -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <h1>JOB365 後台管理</h1>
+    <p>貼上你的 Apps Script 網頁應用程式網址,以及後台密碼(在 Apps Script 程式碼裡設定的那組)。這兩項只會存在你自己這台裝置的瀏覽器裡。</p>
+    <div class="field">
+      <label>Apps Script 網址(Web App URL)</label>
+      <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxxx/exec">
+    </div>
+    <div class="field">
+      <label>後台密碼</label>
+      <input type="password" id="passwordInput" placeholder="在 Code.gs 裡設定的 ADMIN_PASSWORD">
+    </div>
+    <button class="btn btn--primary" id="loginBtn" style="width:100%;padding:12px;">登入</button>
+    <div class="status-msg" id="loginStatus"></div>
+  </div>
+</div>
+
+<!-- ============ 主畫面 ============ -->
+<div id="mainWrap" style="display:none;">
+  <div class="topbar">
+    <div class="topbar__title"><span class="dot"></span> JOB365 後台管理</div>
+    <div class="topbar__actions">
+      <button class="btn" id="refreshBtn">重新整理資料</button>
+      <button class="btn" id="logoutBtn">登出</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-head">
+      <h2>職缺列表</h2>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span class="main-head__count" id="rowCount">共 0 筆</span>
+        <button class="btn btn--primary" id="addBtn">+ 新增職缺</button>
+      </div>
+    </div>
+    <div id="tableWrap"></div>
+  </div>
+</div>
+
+<!-- ============ 新增/編輯彈窗 ============ -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h3 id="modalTitle">新增職缺</h3>
+    <div class="modal-grid" id="modalFields"></div>
+    <div class="status-msg" id="modalStatus"></div>
+    <div class="modal-footer">
+      <button class="btn" id="modalCancelBtn">取消</button>
+      <button class="btn btn--primary" id="modalSaveBtn">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------- 狀態 ---------------- */
+let SCRIPT_URL = localStorage.getItem('job365_admin_url') || '';
+let PASSWORD = localStorage.getItem('job365_admin_pw') || '';
+let HEADERS = [];
+let ROWS = [];
+let editingRow = null; // null = 新增模式;數字 = 正在編輯這個 _row
+
+/* ---------------- 欄位型態判斷 ---------------- */
+function fieldType(header){
+  const h = header.toLowerCase();
+  if(h.includes('remote') || h.includes('overseas')) return 'checkbox';
+  if(h === 'lat' || h === 'lng' || h === 'views') return 'number';
+  if(h === 'info' || h === 'benefits') return 'textarea';
+  return 'text';
+}
+
+/* ---------------- API 呼叫 ---------------- */
+async function apiGet(){
+  const res = await fetch(SCRIPT_URL, { method:'GET' });
+  if(!res.ok) throw new Error('讀取失敗(HTTP ' + res.status + ')');
+  const data = await res.json();
+  if(!data.ok) throw new Error(data.error || '讀取失敗');
+  return data;
+}
+async function apiPost(payload){
+  // 用 text/plain 避免瀏覽器發出 CORS 預檢請求卡住 Apps Script
+  const res = await fetch(SCRIPT_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify({ ...payload, password: PASSWORD })
+  });
+  if(!res.ok) throw new Error('操作失敗(HTTP ' + res.status + ')');
+  const data = await res.json();
+  if(!data.ok) throw new Error(data.error || '操作失敗');
+  return data;
+}
+
+/* ---------------- 登入 ---------------- */
+document.getElementById('scriptUrlInput').value = SCRIPT_URL;
+document.getElementById('passwordInput').value = PASSWORD;
+
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  const pw = document.getElementById('passwordInput').value;
+  const statusEl = document.getElementById('loginStatus');
+  if(!url){ statusEl.textContent = '請貼上 Apps Script 網址'; statusEl.className='status-msg error'; return; }
+  statusEl.textContent = '連線中…'; statusEl.className = 'status-msg';
+  SCRIPT_URL = url; PASSWORD = pw;
+  try{
+    await loadData();
+    localStorage.setItem('job365_admin_url', url);
+    localStorage.setItem('job365_admin_pw', pw);
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('mainWrap').style.display='block';
+  }catch(err){
+    statusEl.textContent = '連線失敗:' + err.message;
+    statusEl.className = 'status-msg error';
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  document.getElementById('mainWrap').style.display='none';
+  document.getElementById('loginWrap').style.display='flex';
+});
+
+/* ---------------- 讀取資料 + 畫表格 ---------------- */
+async function loadData(){
+  const data = await apiGet();
+  HEADERS = data.headers;
+  ROWS = data.rows;
+  renderTable();
+}
+
+function renderTable(){
+  document.getElementById('rowCount').textContent = `共 ${ROWS.length} 筆`;
+  const wrap = document.getElementById('tableWrap');
+  if(!ROWS.length){
+    wrap.innerHTML = `<div class="empty-state">還沒有任何職缺資料,點右上角「+ 新增職缺」開始新增</div>`;
+    return;
+  }
+  const displayCols = HEADERS.filter(h => ['company','title','category','city','updated','views'].includes(h.toLowerCase()));
+  const cols = displayCols.length ? displayCols : HEADERS.slice(0,5);
+
+  let html = '<table><thead><tr>';
+  cols.forEach(c=> html += `<th>${c}</th>`);
+  html += '<th>操作</th></tr></thead><tbody>';
+  ROWS.forEach(row=>{
+    html += '<tr>';
+    cols.forEach(c=>{
+      const isTitle = c.toLowerCase()==='title' || c.toLowerCase()==='company';
+      html += `<td data-label="${c}"${isTitle?' class="cell-title"':''}>${row[c] ?? ''}</td>`;
+    });
+    html += `<td data-label="操作"><div class="row-actions">
+      <button class="btn btn--sm" data-edit="${row._row}">編輯</button>
+      <button class="btn btn--sm btn--danger" data-del="${row._row}">刪除</button>
+    </div></td>`;
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+
+  wrap.querySelectorAll('[data-edit]').forEach(btn=>{
+    btn.addEventListener('click', ()=> openModal(Number(btn.dataset.edit)));
+  });
+  wrap.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', ()=> deleteRow(Number(btn.dataset.del)));
+  });
+}
+
+document.getElementById('refreshBtn').addEventListener('click', async ()=>{
+  try{ await loadData(); }catch(err){ alert('重新整理失敗:' + err.message); }
+});
+
+/* ---------------- 新增/編輯彈窗 ---------------- */
+function openModal(rowNumber){
+  editingRow = rowNumber || null;
+  const job = rowNumber ? ROWS.find(r=> r._row === rowNumber) : null;
+  document.getElementById('modalTitle').textContent = job ? '編輯職缺' : '新增職缺';
+  document.getElementById('modalStatus').textContent = '';
+
+  const fieldsEl = document.getElementById('modalFields');
+  fieldsEl.innerHTML = '';
+  HEADERS.forEach(h=>{
+    const type = fieldType(h);
+    const value = job ? (job[h] ?? '') : '';
+    const wrap = document.createElement('div');
+    wrap.className = 'field' + (type==='textarea' ? ' field--full' : '');
+    if(type === 'checkbox'){
+      const checked = String(value).trim().toLowerCase();
+      const isChecked = ['true','1','是','yes'].includes(checked);
+      wrap.innerHTML = `<label>${h}</label><div class="checkbox-row"><input type="checkbox" data-field="${h}" ${isChecked?'checked':''}> <span class="field__hint">勾選 = TRUE</span></div>`;
+    } else if(type === 'textarea'){
+      wrap.innerHTML = `<label>${h}</label><textarea data-field="${h}">${value}</textarea>`;
+    } else {
+      wrap.innerHTML = `<label>${h}</label><input type="${type}" data-field="${h}" value="${String(value).replace(/"/g,'&quot;')}">`;
+    }
+    fieldsEl.appendChild(wrap);
+  });
+
+  document.getElementById('modalBackdrop').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modalBackdrop').classList.remove('open');
+  editingRow = null;
+}
+
+document.getElementById('addBtn').addEventListener('click', ()=> openModal(null));
+document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+document.getElementById('modalBackdrop').addEventListener('click', (e)=>{ if(e.target.id==='modalBackdrop') closeModal(); });
+
+document.getElementById('modalSaveBtn').addEventListener('click', async ()=>{
+  const statusEl = document.getElementById('modalStatus');
+  const data = {};
+  document.querySelectorAll('#modalFields [data-field]').forEach(el=>{
+    const h = el.dataset.field;
+    if(el.type === 'checkbox'){ data[h] = el.checked ? 'TRUE' : 'FALSE'; }
+    else { data[h] = el.value; }
+  });
+
+  statusEl.textContent = '儲存中…'; statusEl.className = 'status-msg';
+  try{
+    if(editingRow){
+      await apiPost({ action:'update', row: editingRow, data });
+    } else {
+      await apiPost({ action:'add', data });
+    }
+    await loadData();
+    closeModal();
+  }catch(err){
+    statusEl.textContent = '儲存失敗:' + err.message;
+    statusEl.className = 'status-msg error';
+  }
+});
+
+/* ---------------- 刪除 ---------------- */
+async function deleteRow(rowNumber){
+  const job = ROWS.find(r=> r._row === rowNumber);
+  const label = job ? (job.title || job.company || '這筆職缺') : '這筆職缺';
+  if(!confirm(`確定要刪除「${label}」嗎?這個動作沒辦法復原。`)) return;
+  try{
+    await apiPost({ action:'delete', row: rowNumber });
+    await loadData();
+  }catch(err){
+    alert('刪除失敗:' + err.message);
+  }
+}
+
+/* ---------------- 自動登入(如果之前已經存過設定) ---------------- */
+(async function autoLogin(){
+  if(SCRIPT_URL && PASSWORD){
+    try{
+      await loadData();
+      document.getElementById('loginWrap').style.display='none';
+      document.getElementById('mainWrap').style.display='block';
+    }catch(err){
+      // 自動登入失敗就靜靜留在登入畫面,不用跳錯誤嚇到人
+    }
+  }
+})();
+</script>
+</body>
+</html>
