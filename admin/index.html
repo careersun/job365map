@@ -90,8 +90,8 @@
 <div class="login-wrap" id="loginWrap">
   <div class="login-card">
     <h1>JOB365 後台管理</h1>
-    <p>貼上你的 Apps Script 網頁應用程式網址,以及後台密碼(在 Apps Script 程式碼裡設定的那組)。這兩項只會存在你自己這台裝置的瀏覽器裡。</p>
-    <div class="field">
+    <p id="loginDesc">貼上你的 Apps Script 網頁應用程式網址,以及後台密碼(在 Apps Script 程式碼裡設定的那組)。這兩項只會存在你自己這台裝置的瀏覽器裡。</p>
+    <div class="field" id="urlField">
       <label>Apps Script 網址(Web App URL)</label>
       <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxxx/exec">
     </div>
@@ -141,11 +141,19 @@
 
 <script>
 /* ---------------- 狀態 ---------------- */
-let SCRIPT_URL = localStorage.getItem('job365_admin_url') || '';
+// 把你的 Apps Script 網頁應用程式網址貼在下面,貼了之後登入畫面就不會再顯示網址欄位,只需要輸入密碼
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywsF3p4vSjL5pe_RP43T8Ma3amEjCighuxplwSV3AQaLFbNQ8deM8uPzXT6pKZbZvA/exec'; // <-- 例如 'https://script.google.com/macros/s/AKfycb.../exec'
+
+let SCRIPT_URL = DEFAULT_SCRIPT_URL || localStorage.getItem('job365_admin_url') || '';
 let PASSWORD = localStorage.getItem('job365_admin_pw') || '';
 let HEADERS = [];
 let ROWS = [];
 let editingRow = null; // null = 新增模式;數字 = 正在編輯這個 _row
+
+if(DEFAULT_SCRIPT_URL){
+  document.getElementById('urlField').style.display = 'none';
+  document.getElementById('loginDesc').textContent = '輸入後台密碼(在 Apps Script 程式碼裡設定的那組)。密碼只會存在你自己這台裝置的瀏覽器裡。';
+}
 
 /* ---------------- 欄位型態判斷 ---------------- */
 function fieldType(header){
@@ -182,7 +190,7 @@ document.getElementById('scriptUrlInput').value = SCRIPT_URL;
 document.getElementById('passwordInput').value = PASSWORD;
 
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
-  const url = document.getElementById('scriptUrlInput').value.trim();
+  const url = DEFAULT_SCRIPT_URL || document.getElementById('scriptUrlInput').value.trim();
   const pw = document.getElementById('passwordInput').value;
   const statusEl = document.getElementById('loginStatus');
   if(!url){ statusEl.textContent = '請貼上 Apps Script 網址'; statusEl.className='status-msg error'; return; }
