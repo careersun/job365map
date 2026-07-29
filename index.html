@@ -794,12 +794,15 @@ function showJobModal(job, isSwitch){
   recordRealView(job);
 }
 
-// 把真實點閱數寫回試算表(同一個瀏覽器 session 對同一筆職缺只會記一次,避免重複點閱洗數字)
+// 把真實點閱數寫回試算表(每次打開都會累加,但同一筆職缺短時間內重複打開只算一次,避免手滑連點洗數字)
+const RECENT_VIEW_COOLDOWN_MS = 3000; // 幾秒內重複點開同一則職缺不重複計算,可依需求調整
+const recentViewTimestamps = {};
 function recordRealView(job){
   if(!APPS_SCRIPT_URL || !job._row) return;
-  const key = 'job365_viewed_' + job._row;
-  if(sessionStorage.getItem(key)) return; // 這次瀏覽已經記過了
-  sessionStorage.setItem(key, '1');
+  const now = Date.now();
+  const last = recentViewTimestamps[job._row] || 0;
+  if(now - last < RECENT_VIEW_COOLDOWN_MS) return; // 剛剛才點過,視為手滑連點,不重複計算
+  recentViewTimestamps[job._row] = now;
   job.views = (job.views || 0) + 1; // 先在畫面上樂觀更新,不用等後端回應
   document.querySelectorAll(`[data-views-for="${job.id}"]`).forEach(el=>{
     el.textContent = `${job.views} 次點閱 · ${job.applications || 0} 次應徵`;
