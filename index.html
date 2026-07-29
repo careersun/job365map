@@ -805,7 +805,7 @@ function recordRealView(job){
   recentViewTimestamps[job._row] = now;
   job.views = (job.views || 0) + 1; // 先在畫面上樂觀更新,不用等後端回應
   document.querySelectorAll(`[data-views-for="${job.id}"]`).forEach(el=>{
-    el.textContent = `${job.views} 次點閱 · ${job.applications || 0} 次應徵`;
+    el.textContent = `${job.views} 次點閱 · ${job.applications || 0}次應徵`;
   });
   fetch(APPS_SCRIPT_URL, {
     method:'POST',
