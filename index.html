@@ -681,7 +681,7 @@ function jobInnerHTML(job){
         ${job.info ? `<div class="meta-row"><span class="meta-row__icon" title="條件">${ICON_CHECK}</span><span class="meta-row__value">${job.info}</span></div>` : ''}
       </div>
       <div class="card__footer">
-        <span class="card__views mono" data-views-for="${job.id}">${job.views} 次點閱${job.applications ? ` · ${job.applications} 次應徵` : ''}</span>
+        <span class="card__views mono" data-views-for="${job.id}">${job.views} 次點閱 · ${job.applications || 0} 次應徵</span>
         ${(CONTACT_LINK || job.link) ? `<a class="card__go" href="${CONTACT_LINK || job.link}" target="_blank" rel="noopener">${CONTACT_LINK ? '✦ 加LINE詢問 »' : '前往官方頁 →'}</a>` : `<span class="card__go">地圖上查看</span>`}
       </div>
     `;
@@ -802,7 +802,7 @@ function recordRealView(job){
   sessionStorage.setItem(key, '1');
   job.views = (job.views || 0) + 1; // 先在畫面上樂觀更新,不用等後端回應
   document.querySelectorAll(`[data-views-for="${job.id}"]`).forEach(el=>{
-    el.textContent = `${job.views} 次點閱${job.applications ? ` · ${job.applications} 次應徵` : ''}`;
+    el.textContent = `${job.views} 次點閱 · ${job.applications || 0} 次應徵`;
   });
   fetch(APPS_SCRIPT_URL, {
     method:'POST',
