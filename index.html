@@ -144,6 +144,8 @@
   .card__footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px;}
   .card__views{font-size:11.5px;color:var(--text-faint);}
   .card__go{font-family:var(--font-mono);font-size:12.5px;color:var(--text-faint);text-decoration:none;}
+  .share-job-btn{display:block;width:100%;margin:14px 0 0;padding:11px;background:var(--bg-panel-hi);border:1px solid var(--border);border-radius:10px;color:var(--text-muted);font-family:var(--font-body);font-size:13px;cursor:pointer;transition:border-color .15s, color .15s;}
+  .share-job-btn:hover{border-color:var(--periwinkle);color:var(--text);}
   .card__go[href]:hover{color:var(--gold);}
   .empty{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-faint);font-size:14px;}
 
@@ -679,7 +681,7 @@ function jobInnerHTML(job){
         ${job.info ? `<div class="meta-row"><span class="meta-row__icon" title="條件">${ICON_CHECK}</span><span class="meta-row__value">${job.info}</span></div>` : ''}
       </div>
       <div class="card__footer">
-        <span class="card__views mono">${job.views} 次點閱</span>
+        <span class="card__views mono" data-views-for="${job.id}">${job.views} 次點閱${job.applications ? ` · ${job.applications} 次應徵` : ''}</span>
         ${(CONTACT_LINK || job.link) ? `<a class="card__go" href="${CONTACT_LINK || job.link}" target="_blank" rel="noopener">${CONTACT_LINK ? '✦ 加LINE詢問 »' : '前往官方頁 →'}</a>` : `<span class="card__go">地圖上查看</span>`}
       </div>
     `;
@@ -757,11 +759,18 @@ function showJobModal(job, isSwitch){
   jobModal.style.setProperty('--card-color', CAT_COLOR[job.category] || COLORS.teal);
 
   const render = ()=>{
-    jobModalBody.innerHTML = jobInnerHTML(job) + nearbyJobsHTML(job);
+    jobModalBody.innerHTML = jobInnerHTML(job) + `<button class="share-job-btn" id="shareJobBtn">🔗 分享這則職缺</button>` + nearbyJobsHTML(job);
     const goLink = jobModalBody.querySelector('.card__go[href]');
     if(goLink){
       goLink.addEventListener('click', ()=>{
         trackEvent('contact_click', { company: job.company, job_title: job.title, category: job.category, items: [ jobToGA4Item(job) ] });
+      });
+    }
+    const shareBtn = jobModalBody.querySelector('#shareJobBtn');
+    if(shareBtn){
+      shareBtn.addEventListener('click', ()=>{
+        shareJob(job, shareBtn);
+        trackEvent('share_job', { company: job.company, job_title: job.title });
       });
     }
     jobModalBody.querySelectorAll('.nearby-chip').forEach(btn=>{
@@ -782,6 +791,63 @@ function showJobModal(job, isSwitch){
   jobModalBackdrop.classList.add('open');
   trackEvent('view_job_map_pin', { company: job.company, job_title: job.title, category: job.category, city: job.city });
   trackSelectJob(job, '地圖標記');
+  recordRealView(job);
+}
+
+// 把真實點閱數寫回試算表(同一個瀏覽器 session 對同一筆職缺只會記一次,避免重複點閱洗數字)
+function recordRealView(job){
+  if(!APPS_SCRIPT_URL || !job._row) return;
+  const key = 'job365_viewed_' + job._row;
+  if(sessionStorage.getItem(key)) return; // 這次瀏覽已經記過了
+  sessionStorage.setItem(key, '1');
+  job.views = (job.views || 0) + 1; // 先在畫面上樂觀更新,不用等後端回應
+  document.querySelectorAll(`[data-views-for="${job.id}"]`).forEach(el=>{
+    el.textContent = `${job.views} 次點閱${job.applications ? ` · ${job.applications} 次應徵` : ''}`;
+  });
+  fetch(APPS_SCRIPT_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action:'incrementView', row: job._row })
+  }).catch(()=>{}); // 寫入失敗就算了,不影響畫面上的使用體驗,下次重新整理會抓到試算表裡實際的數字
+}
+
+// ---------------- 職缺分享連結 ----------------
+// 用公司+職稱組合成網址參數,不用改試算表結構、不用額外的 id 欄位
+function jobSlug(job){
+  return encodeURIComponent(`${job.company}_${job.title}`.replace(/\s+/g,''));
+}
+function jobShareUrl(job){
+  return `${location.origin}${location.pathname}?job=${jobSlug(job)}`;
+}
+function findJobBySlug(slug){
+  return DATA.find(j=> jobSlug(j) === slug);
+}
+// 頁面載入時,如果網址帶有 ?job=xxx,自動開啟對應的職缺詳情(用於分享單一職缺連結)
+function openJobFromUrlParam(){
+  const slug = new URLSearchParams(location.search).get('job');
+  if(!slug) return;
+  const job = findJobBySlug(slug);
+  if(!job) return;
+  state.activeId = job.id;
+  renderMap(getFiltered());
+  setTimeout(()=> showJobModal(job, false), 300); // 稍微延遲,確保地圖跟卡片都已經渲染完成
+}
+async function shareJob(job, btnEl){
+  const url = jobShareUrl(job);
+  try{
+    if(navigator.share){
+      await navigator.share({ title: `${job.title} - ${job.company}`, url });
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    if(btnEl){
+      const original = btnEl.textContent;
+      btnEl.textContent = '已複製連結 ✓';
+      setTimeout(()=>{ btnEl.textContent = original; }, 1800);
+    }
+  }catch(err){
+    prompt('複製這個連結分享:', url);
+  }
 }
 
 // 在彈窗內直接切換到附近的另一個職缺,不用先關閉視窗
@@ -928,7 +994,8 @@ const HEADER_ALIASES = {
   shift:['shift','班別','班次'],
   restDay:['restday','rest_day','休假','公休','排休','休假制度'],
   benefits:['benefits','福利','員工福利','福利制度'],
-  info:['info','職缺資訊','資訊','說明','備註','description','note','條件','應徵條件','要求']
+  info:['info','職缺資訊','資訊','說明','備註','description','note','條件','應徵條件','要求'],
+  applications:['applications','應徵次數','應徵人數','apply_count']
 };
 
 function normHeader(h){
@@ -975,6 +1042,7 @@ function rowToJob(row, map, idx){
   const updatedDate = updatedRaw ? new Date(updatedRaw) : new Date();
   return {
     id: idx+1,
+    _row: idx+2, // 對應試算表實際列號(第1列是標題),寫回點閱數/應徵次數時要用
     company: get('company') || '',
     title: get('title') || '',
     category: get('category') || '其他',
@@ -985,6 +1053,7 @@ function rowToJob(row, map, idx){
     overseas: parseBool(get('overseas')),
     type: get('type') || '未提供',
     views: (parseInt(get('views').replace(/,/g,'')) || 0),
+    applications: (parseInt(get('applications').replace(/,/g,'')) || 0),
     updated: isNaN(updatedDate.getTime()) ? new Date() : updatedDate,
     link: (get('link') || null),
     salary: (get('salary') || ''),
@@ -1038,6 +1107,7 @@ async function loadFromSheet(url){
     rebuildCityUI();
     renderStats();
     update();
+    openJobFromUrlParam();
   }catch(err){
     console.error('職缺地圖:讀取 Google 試算表失敗 —', err.message);
     console.debug(err);
@@ -1058,6 +1128,7 @@ async function loadFromSheet(url){
 ------------------------------------------- */
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1D9sqdzSZGe8Cpo-XqZKYndN5zW2WR9seazndqrw1cog/edit?usp=sharing'
 const CONTACT_LINK = 'https://lin.ee/oX4esly'
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywsF3p4vSjL5pe_RP43T8Ma3amEjCighuxplwSV3AQaLFbNQ8deM8uPzXT6pKZbZvA/exec'; // 跟後台共用同一個 Apps Script,用來把真實點閱數寫回試算表
 
 rebuildCategoryUI();
 rebuildShiftUI();
