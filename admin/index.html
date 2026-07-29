@@ -89,15 +89,15 @@
 <!-- ============ 登入畫面 ============ -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-card">
-    <h1>JOB365職缺地圖 後台管理</h1>
-    <p id="loginDesc">輸入後台密碼</p>
+    <h1>JOB365 後台管理</h1>
+    <p id="loginDesc">貼上你的 Apps Script 網頁應用程式網址,以及後台密碼(在 Apps Script 程式碼裡設定的那組)。這兩項只會存在你自己這台裝置的瀏覽器裡。</p>
     <div class="field" id="urlField">
       <label>Apps Script 網址(Web App URL)</label>
       <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxxx/exec">
     </div>
     <div class="field">
       <label>後台密碼</label>
-      <input type="password" id="passwordInput" placeholder="ADMIN_PASSWORD">
+      <input type="password" id="passwordInput" placeholder="在 Code.gs 裡設定的 ADMIN_PASSWORD">
     </div>
     <button class="btn btn--primary" id="loginBtn" style="width:100%;padding:12px;">登入</button>
     <div class="status-msg" id="loginStatus"></div>
@@ -221,6 +221,10 @@ async function loadData(){
   renderTable();
 }
 
+function findAppHeader(){
+  return HEADERS.find(h => ['applications','應徵次數','應徵人數','apply_count'].includes(h) || h.toLowerCase()==='applications');
+}
+
 function renderTable(){
   document.getElementById('rowCount').textContent = `共 ${ROWS.length} 筆`;
   const wrap = document.getElementById('tableWrap');
@@ -228,11 +232,13 @@ function renderTable(){
     wrap.innerHTML = `<div class="empty-state">還沒有任何職缺資料,點右上角「+ 新增職缺」開始新增</div>`;
     return;
   }
+  const appHeader = findAppHeader();
   const displayCols = HEADERS.filter(h => ['company','title','category','city','updated','views'].includes(h.toLowerCase()));
   const cols = displayCols.length ? displayCols : HEADERS.slice(0,5);
 
   let html = '<table><thead><tr>';
   cols.forEach(c=> html += `<th>${c}</th>`);
+  if(appHeader) html += `<th>${appHeader}</th>`;
   html += '<th>操作</th></tr></thead><tbody>';
   ROWS.forEach(row=>{
     html += '<tr>';
@@ -240,7 +246,9 @@ function renderTable(){
       const isTitle = c.toLowerCase()==='title' || c.toLowerCase()==='company';
       html += `<td data-label="${c}"${isTitle?' class="cell-title"':''}>${row[c] ?? ''}</td>`;
     });
+    if(appHeader) html += `<td data-label="${appHeader}">${row[appHeader] || 0}</td>`;
     html += `<td data-label="操作"><div class="row-actions">
+      ${appHeader ? `<button class="btn btn--sm" data-appinc="${row._row}">+1 應徵</button>` : ''}
       <button class="btn btn--sm" data-edit="${row._row}">編輯</button>
       <button class="btn btn--sm btn--danger" data-del="${row._row}">刪除</button>
     </div></td>`;
@@ -255,6 +263,26 @@ function renderTable(){
   wrap.querySelectorAll('[data-del]').forEach(btn=>{
     btn.addEventListener('click', ()=> deleteRow(Number(btn.dataset.del)));
   });
+  wrap.querySelectorAll('[data-appinc]').forEach(btn=>{
+    btn.addEventListener('click', ()=> quickIncrementApplications(Number(btn.dataset.appinc), btn));
+  });
+}
+
+async function quickIncrementApplications(rowNumber, btnEl){
+  const row = ROWS.find(r=> r._row === rowNumber);
+  const appHeader = findAppHeader();
+  if(!row || !appHeader) return;
+  const data = {};
+  HEADERS.forEach(h=> data[h] = row[h] ?? '');
+  data[appHeader] = (Number(row[appHeader]) || 0) + 1;
+  if(btnEl){ btnEl.disabled = true; btnEl.textContent = '更新中…'; }
+  try{
+    await apiPost({ action:'update', row: rowNumber, data });
+    await loadData();
+  }catch(err){
+    alert('更新失敗:' + err.message);
+    if(btnEl){ btnEl.disabled = false; btnEl.textContent = '+1 應徵'; }
+  }
 }
 
 document.getElementById('refreshBtn').addEventListener('click', async ()=>{
