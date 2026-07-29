@@ -813,21 +813,22 @@ function recordRealView(job){
 
 // ---------------- 職缺分享連結 ----------------
 // 用公司+職稱組合成網址參數,不用改試算表結構、不用額外的 id 欄位
-function jobSlug(job){
-  return encodeURIComponent(`${job.company}_${job.title}`.replace(/\s+/g,''));
+function jobSlugRaw(job){
+  return `${job.company}_${job.title}`.replace(/\s+/g,'');
 }
 function jobShareUrl(job){
-  return `${location.origin}${location.pathname}?job=${jobSlug(job)}`;
+  return `${location.origin}${location.pathname}?job=${encodeURIComponent(jobSlugRaw(job))}`;
 }
 function findJobBySlug(slug){
-  return DATA.find(j=> jobSlug(j) === slug);
+  return DATA.find(j=> jobSlugRaw(j) === slug);
 }
 // 頁面載入時,如果網址帶有 ?job=xxx,自動開啟對應的職缺詳情(用於分享單一職缺連結)
 function openJobFromUrlParam(){
-  const slug = new URLSearchParams(location.search).get('job');
+  const slug = new URLSearchParams(location.search).get('job'); // URLSearchParams 會自動解碼,所以這裡拿到的已經是原始字串
   if(!slug) return;
   const job = findJobBySlug(slug);
-  if(!job) return;
+  if(!job){ console.warn('職缺地圖:網址帶的職缺參數找不到對應職缺 —', slug); return; }
+  console.info('職缺地圖:從分享連結開啟職缺 —', job.title, job.company);
   state.activeId = job.id;
   renderMap(getFiltered());
   setTimeout(()=> showJobModal(job, false), 300); // 稍微延遲,確保地圖跟卡片都已經渲染完成
