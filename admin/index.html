@@ -196,7 +196,8 @@ function fieldType(header){
 
 /* ---------------- API 呼叫 ---------------- */
 async function apiGet(){
-  const res = await fetch(SCRIPT_URL, { method:'GET' });
+  const url = SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 'password=' + encodeURIComponent(PASSWORD);
+  const res = await fetch(url, { method:'GET' });
   if(!res.ok) throw new Error('讀取失敗(HTTP ' + res.status + ')');
   const data = await res.json();
   if(!data.ok) throw new Error(data.error || '讀取失敗');
