@@ -51,6 +51,27 @@
   /* ---- 主畫面 ---- */
   .main{padding:24px 28px 60px;max-width:1200px;margin:0 auto;}
   .main-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+  .tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);}
+  .tab-btn{background:none;border:none;color:var(--text-muted);font-family:var(--font-display);font-weight:600;font-size:14px;padding:10px 4px;margin-right:18px;cursor:pointer;border-bottom:2px solid transparent;}
+  .tab-btn.active{color:var(--text);border-bottom-color:var(--gold);}
+
+  .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:28px;}
+  .stat-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:18px;}
+  .stat-card__label{font-size:12px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;}
+  .stat-card__value{font-family:var(--font-display);font-size:26px;font-weight:700;}
+  .stat-card__value.gold{color:var(--gold);}
+  .stat-card__value.teal{color:var(--teal);}
+
+  .rank-section{margin-bottom:28px;}
+  .rank-section h3{font-family:var(--font-display);font-size:15px;margin:0 0 12px;}
+  .rank-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;}
+  .rank-row__num{font-family:var(--font-mono);color:var(--text-faint);font-size:13px;width:20px;flex-shrink:0;}
+  .rank-row__info{flex:1;min-width:0;}
+  .rank-row__title{font-weight:600;font-size:13.5px;}
+  .rank-row__company{font-size:11.5px;color:var(--text-faint);}
+  .rank-row__value{font-family:var(--font-mono);font-weight:700;font-size:15px;flex-shrink:0;}
+  .rank-bar{height:4px;border-radius:2px;background:var(--border);margin-top:6px;overflow:hidden;}
+  .rank-bar__fill{height:100%;border-radius:2px;}
   .main-head h2{font-family:var(--font-display);font-size:18px;margin:0;}
   .main-head__count{color:var(--text-muted);font-size:13px;font-family:var(--font-mono);}
 
@@ -115,14 +136,23 @@
   </div>
 
   <div class="main">
-    <div class="main-head">
-      <h2>職缺列表</h2>
-      <div style="display:flex;align-items:center;gap:14px;">
-        <span class="main-head__count" id="rowCount">共 0 筆</span>
-        <button class="btn btn--primary" id="addBtn">+ 新增職缺</button>
-      </div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tabListBtn">職缺列表</button>
+      <button class="tab-btn" id="tabStatsBtn">數據總覽</button>
     </div>
-    <div id="tableWrap"></div>
+
+    <div id="listView">
+      <div class="main-head">
+        <h2>職缺列表</h2>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span class="main-head__count" id="rowCount">共 0 筆</span>
+          <button class="btn btn--primary" id="addBtn">+ 新增職缺</button>
+        </div>
+      </div>
+      <div id="tableWrap"></div>
+    </div>
+
+    <div id="statsView" style="display:none;"></div>
   </div>
 </div>
 
@@ -219,10 +249,80 @@ async function loadData(){
   HEADERS = data.headers;
   ROWS = data.rows;
   renderTable();
+  if(document.getElementById('statsView').style.display !== 'none') renderStats();
 }
 
 function findAppHeader(){
   return HEADERS.find(h => ['applications','應徵次數','應徵人數','apply_count'].includes(h) || h.toLowerCase()==='applications');
+}
+
+/* ---------------- 頁籤切換 ---------------- */
+document.getElementById('tabListBtn').addEventListener('click', ()=>{
+  document.getElementById('tabListBtn').classList.add('active');
+  document.getElementById('tabStatsBtn').classList.remove('active');
+  document.getElementById('listView').style.display = 'block';
+  document.getElementById('statsView').style.display = 'none';
+});
+document.getElementById('tabStatsBtn').addEventListener('click', ()=>{
+  document.getElementById('tabStatsBtn').classList.add('active');
+  document.getElementById('tabListBtn').classList.remove('active');
+  document.getElementById('listView').style.display = 'none';
+  document.getElementById('statsView').style.display = 'block';
+  renderStats();
+});
+
+function findViewsHeader(){
+  return HEADERS.find(h => ['views','點閱','點閱數'].includes(h) || h.toLowerCase()==='views');
+}
+
+function renderStats(){
+  const wrap = document.getElementById('statsView');
+  const viewsHeader = findViewsHeader();
+  const appHeader = findAppHeader();
+
+  if(!viewsHeader && !appHeader){
+    wrap.innerHTML = `<div class="empty-state">試算表裡還沒有「views(點閱)」或「applications(應徵次數)」欄位,先加上欄位才看得到數據</div>`;
+    return;
+  }
+
+  const withViews = ROWS.map(r=> ({ row:r, views: Number(r[viewsHeader]) || 0, apps: appHeader ? (Number(r[appHeader]) || 0) : 0 }));
+  const totalViews = withViews.reduce((s,r)=> s+r.views, 0);
+  const totalApps = withViews.reduce((s,r)=> s+r.apps, 0);
+  const avgViews = ROWS.length ? Math.round(totalViews / ROWS.length) : 0;
+
+  const topByViews = [...withViews].sort((a,b)=> b.views - a.views).slice(0, 10);
+  const topByApps = appHeader ? [...withViews].sort((a,b)=> b.apps - a.apps).slice(0, 10) : [];
+  const maxViews = Math.max(1, ...topByViews.map(r=>r.views));
+  const maxApps = Math.max(1, ...topByApps.map(r=>r.apps));
+
+  function rankRow(item, value, max, color){
+    const pct = Math.round((value / max) * 100);
+    return `<div class="rank-row">
+      <div class="rank-row__num">${item.row.title ? '' : ''}</div>
+      <div class="rank-row__info">
+        <div class="rank-row__title">${item.row.title || '(未命名)'}</div>
+        <div class="rank-row__company">${item.row.company || ''}</div>
+        <div class="rank-bar"><div class="rank-bar__fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+      <div class="rank-row__value" style="color:${color}">${value}</div>
+    </div>`;
+  }
+
+  let html = `<div class="stat-cards">
+    <div class="stat-card"><div class="stat-card__label">總職缺數</div><div class="stat-card__value">${ROWS.length}</div></div>
+    ${viewsHeader ? `<div class="stat-card"><div class="stat-card__label">總點閱數</div><div class="stat-card__value gold">${totalViews}</div></div>` : ''}
+    ${viewsHeader ? `<div class="stat-card"><div class="stat-card__label">平均點閱/職缺</div><div class="stat-card__value">${avgViews}</div></div>` : ''}
+    ${appHeader ? `<div class="stat-card"><div class="stat-card__label">總應徵次數</div><div class="stat-card__value teal">${totalApps}</div></div>` : ''}
+  </div>`;
+
+  if(viewsHeader){
+    html += `<div class="rank-section"><h3>🔥 點閱率排行 TOP 10</h3>${topByViews.map(item=> rankRow(item, item.views, maxViews, 'var(--gold)')).join('') || '<div class="empty-state">還沒有資料</div>'}</div>`;
+  }
+  if(appHeader){
+    html += `<div class="rank-section"><h3>📩 應徵次數排行 TOP 10</h3>${topByApps.map(item=> rankRow(item, item.apps, maxApps, 'var(--teal)')).join('') || '<div class="empty-state">還沒有資料</div>'}</div>`;
+  }
+
+  wrap.innerHTML = html;
 }
 
 function renderTable(){
