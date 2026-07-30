@@ -87,6 +87,22 @@
   .filterbar__scroll{display:contents;} /* 桌面版:包裹用的div不影響原本flex排版,手機版才會改成真正的捲動容器 */
   .filterbar.collapsed{max-height:0;padding-top:0;padding-bottom:0;border-bottom-color:transparent;}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .row--scroll{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;
+    padding-bottom:6px;
+    margin-bottom:-6px;
+    mask-image:linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%);
+  }
+  .row--scroll .row__label{flex-shrink:0;}
+  .row--scroll .chip{flex-shrink:0;}
+  .row--scroll::-webkit-scrollbar{height:5px;}
+  .row--scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  .row--scroll::-webkit-scrollbar-track{background:transparent;}
   .row__label{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;width:52px;flex-shrink:0;}
   .tab{background:transparent;border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-body);font-size:13px;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .15s;}
   select.tab{-webkit-appearance:none;-moz-appearance:none;appearance:none;padding-right:26px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238B93A1'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
@@ -334,9 +350,9 @@
     <select class="tab" id="cityFilter" style="cursor:pointer;"><option value="all">全部縣市</option></select>
   </div>
   <div class="row" id="sortRow"><span class="row__label">排序</span></div>
-  <div class="row" id="catRow"><span class="row__label">性質</span></div>
-  <div class="row" id="shiftRow"><span class="row__label">班別</span></div>
-  <div class="row" id="restRow"><span class="row__label">休假</span></div>
+  <div class="row row--scroll" id="catRow"><span class="row__label">性質</span></div>
+  <div class="row row--scroll" id="shiftRow"><span class="row__label">班別</span></div>
+  <div class="row row--scroll" id="restRow"><span class="row__label">休假</span></div>
   <div class="row row--actions">
     <span class="row__label" style="visibility:hidden;">　</span>
     <label class="remote-toggle"><input type="checkbox" id="remoteOnly"> 只看可遠端</label>
@@ -794,18 +810,15 @@ function showJobModal(job, isSwitch){
   recordRealView(job);
 }
 
-// 把真實點閱數寫回試算表(每次打開都會累加,但同一筆職缺短時間內重複打開只算一次,避免手滑連點洗數字)
-const RECENT_VIEW_COOLDOWN_MS = 3000; // 幾秒內重複點開同一則職缺不重複計算,可依需求調整
-const recentViewTimestamps = {};
+// 把真實點閱數寫回試算表(同一個瀏覽器 session 對同一筆職缺只會記一次,避免重複點閱洗數字)
 function recordRealView(job){
   if(!APPS_SCRIPT_URL || !job._row) return;
-  const now = Date.now();
-  const last = recentViewTimestamps[job._row] || 0;
-  if(now - last < RECENT_VIEW_COOLDOWN_MS) return; // 剛剛才點過,視為手滑連點,不重複計算
-  recentViewTimestamps[job._row] = now;
+  const key = 'job365_viewed_' + job._row;
+  if(sessionStorage.getItem(key)) return; // 這次瀏覽已經記過了
+  sessionStorage.setItem(key, '1');
   job.views = (job.views || 0) + 1; // 先在畫面上樂觀更新,不用等後端回應
   document.querySelectorAll(`[data-views-for="${job.id}"]`).forEach(el=>{
-    el.textContent = `${job.views} 次點閱 · ${job.applications || 0}次應徵`;
+    el.textContent = `${job.views} 次點閱 · ${job.applications || 0} 次應徵`;
   });
   fetch(APPS_SCRIPT_URL, {
     method:'POST',
@@ -1154,24 +1167,39 @@ update();
   });
 })();
 
-// 桌面版:捲動到地圖區塊時自動收合篩選列,捲回卡片區時自動展開(手機版走底部滑出面板,不受影響)
+// 桌面版:往下捲動就自動收合篩選列,往上捲動就自動展開回來(手機版走底部滑出面板,不受影響)
 (function(){
-  const mapEl = document.getElementById('map');
   const filterbarEl = document.getElementById('filterbar');
-  if(!mapEl || !filterbarEl) return;
-  const SCROLL_THRESHOLD = 160; // 至少要真的往下捲動這麼多,才允許自動收合;避免頁面太短(例如搜尋 0 筆結果)時誤判
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      const isDesktop = window.matchMedia('(min-width: 721px)').matches;
-      const hasScrolledEnough = window.scrollY > SCROLL_THRESHOLD;
-      if(isDesktop && entry.isIntersecting && hasScrolledEnough){
-        filterbarEl.classList.add('collapsed');
-      } else {
-        filterbarEl.classList.remove('collapsed');
-      }
-    });
-  }, { threshold: 0.05 });
-  observer.observe(mapEl);
+  if(!filterbarEl) return;
+  const SCROLL_THRESHOLD = 120; // 至少往下捲動這麼多才開始收合,避免一開始滑一點點就收起來
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function handleScroll(){
+    const isDesktop = window.matchMedia('(min-width: 721px)').matches;
+    if(!isDesktop){ filterbarEl.classList.remove('collapsed'); ticking = false; return; }
+
+    const currentY = window.scrollY;
+    const scrollingDown = currentY > lastY;
+
+    if(currentY <= SCROLL_THRESHOLD){
+      filterbarEl.classList.remove('collapsed'); // 還在最上面附近,一律展開
+    } else if(scrollingDown){
+      filterbarEl.classList.add('collapsed');
+    } else {
+      filterbarEl.classList.remove('collapsed'); // 往上滑,展開回來
+    }
+
+    lastY = currentY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){
+      requestAnimationFrame(handleScroll);
+      ticking = true;
+    }
+  }, { passive: true });
 })();
 
 const overrideUrl = new URLSearchParams(location.search).get('sheet');
