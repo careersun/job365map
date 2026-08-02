@@ -148,6 +148,10 @@
   .share-job-btn:hover{border-color:var(--periwinkle);color:var(--text);}
   .card__go[href]:hover{color:var(--gold);}
   .empty{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-faint);font-size:14px;}
+  .skeleton-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:18px;height:180px;overflow:hidden;position:relative;}
+  .skeleton-card::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);transform:translateX(-100%);animation:skeletonShine 1.6s ease-in-out infinite;}
+  @keyframes skeletonShine{ 100%{ transform:translateX(100%); } }
+  .skeleton-line{background:var(--bg-panel-hi);border-radius:6px;margin-bottom:10px;}
   .btn-reset-filters{margin-top:16px;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:11px 24px;font-family:var(--font-display);font-weight:600;font-size:13.5px;cursor:pointer;}
   .btn-reset-filters:hover{filter:brightness(1.08);}
 
@@ -429,6 +433,7 @@ let DATA = [
   {id:2, company:'Fathom Design Studio', title:'UX 設計師', category:'設計', city:'台中', lat:24.1477, lng:120.6736, remote:false, overseas:false, type:'本土', views:212, updated:daysAgo(12), link:null, salary:''},
   {id:3, company:'Marlow Analytics', title:'資料科學家', category:'資料', city:'台北', lat:25.0210, lng:121.5445, remote:true, overseas:false, type:'外商', views:701, updated:daysAgo(1), link:null, salary:''},
 ];
+const DEMO_DATA = DATA; // 保留參照,方便之後判斷「現在畫面上是不是還在用示範資料」
 
 /* ---------------- STATE ---------------- */
 const state = { query:'', region:'all', city:'all', sort:'hot', cats:new Set(), shifts:new Set(), rests:new Set(), remoteOnly:false, activeId:null };
@@ -1125,6 +1130,15 @@ async function loadFromSheet(url){
   }catch(err){
     console.error('職缺地圖:讀取 Google 試算表失敗 —', err.message);
     console.debug(err);
+    // 真的連不上試算表時,才退回顯示範例資料當備案,不要讓使用者一直卡在載入畫面
+    if(DATA === DEMO_DATA){
+      rebuildCategoryUI();
+      rebuildShiftUI();
+      rebuildRestUI();
+      rebuildCityUI();
+      renderStats();
+      update();
+    }
   }
 }
 
@@ -1144,12 +1158,33 @@ const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1D9sqdzSZGe8Cpo-XqZKYn
 const CONTACT_LINK = 'https://lin.ee/oX4esly'
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywsF3p4vSjL5pe_RP43T8Ma3amEjCighuxplwSV3AQaLFbNQ8deM8uPzXT6pKZbZvA/exec'; // 跟後台共用同一個 Apps Script,用來把真實點閱數寫回試算表
 
-rebuildCategoryUI();
-rebuildShiftUI();
-rebuildRestUI();
-rebuildCityUI();
-renderStats();
-update();
+const overrideUrl = new URLSearchParams(location.search).get('sheet');
+const activeSheetUrl = overrideUrl || SHEET_URL;
+
+function renderLoadingSkeleton(){
+  const wrap = document.getElementById('list');
+  wrap.innerHTML = Array.from({length:6}).map(()=> `
+    <div class="skeleton-card">
+      <div class="skeleton-line" style="width:60%;height:18px;"></div>
+      <div class="skeleton-line" style="width:40%;height:12px;margin-top:14px;"></div>
+      <div class="skeleton-line" style="width:80%;height:12px;margin-top:20px;"></div>
+      <div class="skeleton-line" style="width:70%;height:12px;"></div>
+    </div>
+  `).join('');
+}
+
+if(activeSheetUrl){
+  // 有設定試算表:先顯示載入中的骨架卡片,避免一開始就閃出示範資料、資料回來又整批跳換
+  renderLoadingSkeleton();
+} else {
+  // 沒有設定試算表(理論上不會發生,保留當保險):直接顯示示範資料
+  rebuildCategoryUI();
+  rebuildShiftUI();
+  rebuildRestUI();
+  rebuildCityUI();
+  renderStats();
+  update();
+}
 
 // 回到頂端按鈕:捲動超過一段距離才出現,點擊平滑捲回最上方
 (function(){
@@ -1184,8 +1219,6 @@ update();
   observer.observe(mapEl);
 })();
 
-const overrideUrl = new URLSearchParams(location.search).get('sheet');
-const activeSheetUrl = overrideUrl || SHEET_URL;
 if(activeSheetUrl){ loadFromSheet(activeSheetUrl); }
 </script>
 </body>
