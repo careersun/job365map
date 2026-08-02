@@ -148,6 +148,8 @@
   .share-job-btn:hover{border-color:var(--periwinkle);color:var(--text);}
   .card__go[href]:hover{color:var(--gold);}
   .empty{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-faint);font-size:14px;}
+  .btn-reset-filters{margin-top:16px;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:11px 24px;font-family:var(--font-display);font-weight:600;font-size:13.5px;cursor:pointer;}
+  .btn-reset-filters:hover{filter:brightness(1.08);}
 
   .map-section{padding:0 32px 64px;}
   .map-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
@@ -571,13 +573,14 @@ document.getElementById('filterSheetClose').addEventListener('click', closeFilte
 document.getElementById('filterApplyBtn').addEventListener('click', closeFilterSheet);
 
 document.getElementById('cityFilter').addEventListener('change', e=>{ state.city = e.target.value; update(); });
-document.getElementById('clearBtn').addEventListener('click', ()=>{
+function clearAllFilters(){
   state.query=''; state.region='all'; state.city='all'; state.sort='hot';
   state.cats.clear(); state.shifts.clear(); state.rests.clear(); state.remoteOnly=false;
   document.getElementById('searchInput').value=''; document.getElementById('remoteOnly').checked=false;
   document.getElementById('cityFilter').value='all';
   update();
-});
+}
+document.getElementById('clearBtn').addEventListener('click', clearAllFilters);
 // ---- GA4 事件追蹤小工具:沒接 GA 時會安靜跳過,不影響任何功能 ----
 function trackEvent(name, params){
   if(typeof window.gtag === 'function'){
@@ -692,7 +695,13 @@ function jobInnerHTML(job){
 const listEl = document.getElementById('list');
 function renderList(items){
   listEl.innerHTML = '';
-  if(!items.length){ listEl.innerHTML = `<div class="empty">找不到符合條件的職缺 —— 試試清除篩選或換個關鍵字</div>`; return; }
+  if(!items.length){
+    const remoteRelated = state.sort==='remote' || state.remoteOnly;
+    const hint = remoteRelated ? '目前沒有符合條件的可遠端職缺' : '找不到符合條件的職缺';
+    listEl.innerHTML = `<div class="empty">${hint}<br><button class="btn-reset-filters" id="emptyResetBtn">顯示所有職缺</button></div>`;
+    document.getElementById('emptyResetBtn').addEventListener('click', clearAllFilters);
+    return;
+  }
   items.forEach(job=>{
     const card = document.createElement('article');
     card.className = 'card' + (job.id===state.activeId?' highlight':'');
