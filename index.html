@@ -646,6 +646,7 @@ function getFiltered(){
     if(state.shifts.size && !state.shifts.has(job.shift)) return false;
     if(state.rests.size && !state.rests.has(job.restDay)) return false;
     if(state.remoteOnly && !job.remote) return false;
+    if(state.sort==='remote' && !job.remote) return false; // 「全遠端」不再只是排序,點了就真的只顯示可遠端職缺
     if(state.query){
       const tokens = state.query.split(/\s+/).filter(Boolean);
       const hay = `${job.company} ${job.title} ${job.city} ${job.category} ${job.type}`.toLowerCase();
