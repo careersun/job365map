@@ -51,7 +51,11 @@
     --font-display:'Space Grotesk',sans-serif; --font-mono:'JetBrains Mono',monospace; --font-body:'Inter',sans-serif;
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;}
+  body{margin:0;background:radial-gradient(ellipse 1500px 950px at 50% -10%, #263A5C 0%, #1B2740 38%, #161D2E 62%, var(--bg) 88%);background-attachment:fixed;color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;}
+
+  .bg-globe{position:fixed;top:50%;right:-160px;width:680px;height:680px;transform:translateY(-50%);z-index:-1;pointer-events:none;opacity:.5;}
+  .bg-globe canvas{display:block;width:100%;height:100%;}
+  @media (max-width:900px){ .bg-globe{width:420px;height:420px;right:-120px;opacity:.4;} }
   a{color:inherit;}
   ::selection{background:var(--gold);color:#12151C;}
 
@@ -87,6 +91,22 @@
   .filterbar__scroll{display:contents;} /* 桌面版:包裹用的div不影響原本flex排版,手機版才會改成真正的捲動容器 */
   .filterbar.collapsed{max-height:0;padding-top:0;padding-bottom:0;border-bottom-color:transparent;}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .row--scroll{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;
+    padding-bottom:6px;
+    margin-bottom:-6px;
+    mask-image:linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%);
+  }
+  .row--scroll .row__label{flex-shrink:0;}
+  .row--scroll .chip{flex-shrink:0;}
+  .row--scroll::-webkit-scrollbar{height:5px;}
+  .row--scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  .row--scroll::-webkit-scrollbar-track{background:transparent;}
   .row__label{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;width:52px;flex-shrink:0;}
   .tab{background:transparent;border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-body);font-size:13px;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all .15s;}
   select.tab{-webkit-appearance:none;-moz-appearance:none;appearance:none;padding-right:26px;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238B93A1'/></svg>");background-repeat:no-repeat;background-position:right 12px center;}
@@ -148,6 +168,12 @@
   .share-job-btn:hover{border-color:var(--periwinkle);color:var(--text);}
   .card__go[href]:hover{color:var(--gold);}
   .empty{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--text-faint);font-size:14px;}
+  .skeleton-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:18px;height:180px;overflow:hidden;position:relative;}
+  .skeleton-card::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);transform:translateX(-100%);animation:skeletonShine 1.6s ease-in-out infinite;}
+  @keyframes skeletonShine{ 100%{ transform:translateX(100%); } }
+  .skeleton-line{background:var(--bg-panel-hi);border-radius:6px;margin-bottom:10px;}
+  .btn-reset-filters{margin-top:16px;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:11px 24px;font-family:var(--font-display);font-weight:600;font-size:13.5px;cursor:pointer;}
+  .btn-reset-filters:hover{filter:brightness(1.08);}
 
   .map-section{padding:0 32px 64px;}
   .map-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
@@ -285,6 +311,8 @@
 </head>
 <body>
 
+<div class="bg-globe" id="bgGlobe" aria-hidden="true"></div>
+
 
 <nav class="nav">
   <div class="nav__logo">
@@ -334,9 +362,9 @@
     <select class="tab" id="cityFilter" style="cursor:pointer;"><option value="all">全部縣市</option></select>
   </div>
   <div class="row" id="sortRow"><span class="row__label">排序</span></div>
-  <div class="row" id="catRow"><span class="row__label">性質</span></div>
-  <div class="row" id="shiftRow"><span class="row__label">班別</span></div>
-  <div class="row" id="restRow"><span class="row__label">休假</span></div>
+  <div class="row row--scroll" id="catRow"><span class="row__label">性質</span></div>
+  <div class="row row--scroll" id="shiftRow"><span class="row__label">班別</span></div>
+  <div class="row row--scroll" id="restRow"><span class="row__label">休假</span></div>
   <div class="row row--actions">
     <span class="row__label" style="visibility:hidden;">　</span>
     <label class="remote-toggle"><input type="checkbox" id="remoteOnly"> 只看可遠端</label>
@@ -377,6 +405,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* ---------------- COLORS / PALETTE ---------------- */
 const COLORS = { teal:'#4FBFAE', coral:'#E8674A', gold:'#F2A93D', periwinkle:'#7C93F2', violet:'#C77DFF' };
@@ -427,6 +456,7 @@ let DATA = [
   {id:2, company:'Fathom Design Studio', title:'UX 設計師', category:'設計', city:'台中', lat:24.1477, lng:120.6736, remote:false, overseas:false, type:'本土', views:212, updated:daysAgo(12), link:null, salary:''},
   {id:3, company:'Marlow Analytics', title:'資料科學家', category:'資料', city:'台北', lat:25.0210, lng:121.5445, remote:true, overseas:false, type:'外商', views:701, updated:daysAgo(1), link:null, salary:''},
 ];
+const DEMO_DATA = DATA; // 保留參照,方便之後判斷「現在畫面上是不是還在用示範資料」
 
 /* ---------------- STATE ---------------- */
 const state = { query:'', region:'all', city:'all', sort:'hot', cats:new Set(), shifts:new Set(), rests:new Set(), remoteOnly:false, activeId:null };
@@ -571,13 +601,14 @@ document.getElementById('filterSheetClose').addEventListener('click', closeFilte
 document.getElementById('filterApplyBtn').addEventListener('click', closeFilterSheet);
 
 document.getElementById('cityFilter').addEventListener('change', e=>{ state.city = e.target.value; update(); });
-document.getElementById('clearBtn').addEventListener('click', ()=>{
+function clearAllFilters(){
   state.query=''; state.region='all'; state.city='all'; state.sort='hot';
   state.cats.clear(); state.shifts.clear(); state.rests.clear(); state.remoteOnly=false;
   document.getElementById('searchInput').value=''; document.getElementById('remoteOnly').checked=false;
   document.getElementById('cityFilter').value='all';
   update();
-});
+}
+document.getElementById('clearBtn').addEventListener('click', clearAllFilters);
 // ---- GA4 事件追蹤小工具:沒接 GA 時會安靜跳過,不影響任何功能 ----
 function trackEvent(name, params){
   if(typeof window.gtag === 'function'){
@@ -646,6 +677,7 @@ function getFiltered(){
     if(state.shifts.size && !state.shifts.has(job.shift)) return false;
     if(state.rests.size && !state.rests.has(job.restDay)) return false;
     if(state.remoteOnly && !job.remote) return false;
+    if(state.sort==='remote' && !job.remote) return false; // 「全遠端」不再只是排序,點了就真的只顯示可遠端職缺
     if(state.query){
       const tokens = state.query.split(/\s+/).filter(Boolean);
       const hay = `${job.company} ${job.title} ${job.city} ${job.category} ${job.type}`.toLowerCase();
@@ -691,7 +723,13 @@ function jobInnerHTML(job){
 const listEl = document.getElementById('list');
 function renderList(items){
   listEl.innerHTML = '';
-  if(!items.length){ listEl.innerHTML = `<div class="empty">找不到符合條件的職缺 —— 試試清除篩選或換個關鍵字</div>`; return; }
+  if(!items.length){
+    const remoteRelated = state.sort==='remote' || state.remoteOnly;
+    const hint = remoteRelated ? '目前沒有符合條件的可遠端職缺' : '找不到符合條件的職缺';
+    listEl.innerHTML = `<div class="empty">${hint}<br><button class="btn-reset-filters" id="emptyResetBtn">顯示所有職缺</button></div>`;
+    document.getElementById('emptyResetBtn').addEventListener('click', clearAllFilters);
+    return;
+  }
   items.forEach(job=>{
     const card = document.createElement('article');
     card.className = 'card' + (job.id===state.activeId?' highlight':'');
@@ -1115,6 +1153,15 @@ async function loadFromSheet(url){
   }catch(err){
     console.error('職缺地圖:讀取 Google 試算表失敗 —', err.message);
     console.debug(err);
+    // 真的連不上試算表時,才退回顯示範例資料當備案,不要讓使用者一直卡在載入畫面
+    if(DATA === DEMO_DATA){
+      rebuildCategoryUI();
+      rebuildShiftUI();
+      rebuildRestUI();
+      rebuildCityUI();
+      renderStats();
+      update();
+    }
   }
 }
 
@@ -1134,12 +1181,110 @@ const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1D9sqdzSZGe8Cpo-XqZKYn
 const CONTACT_LINK = 'https://lin.ee/oX4esly'
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywsF3p4vSjL5pe_RP43T8Ma3amEjCighuxplwSV3AQaLFbNQ8deM8uPzXT6pKZbZvA/exec'; // 跟後台共用同一個 Apps Script,用來把真實點閱數寫回試算表
 
-rebuildCategoryUI();
-rebuildShiftUI();
-rebuildRestUI();
-rebuildCityUI();
-renderStats();
-update();
+const overrideUrl = new URLSearchParams(location.search).get('sheet');
+const activeSheetUrl = overrideUrl || SHEET_URL;
+
+function renderLoadingSkeleton(){
+  const wrap = document.getElementById('list');
+  wrap.innerHTML = Array.from({length:6}).map(()=> `
+    <div class="skeleton-card">
+      <div class="skeleton-line" style="width:60%;height:18px;"></div>
+      <div class="skeleton-line" style="width:40%;height:12px;margin-top:14px;"></div>
+      <div class="skeleton-line" style="width:80%;height:12px;margin-top:20px;"></div>
+      <div class="skeleton-line" style="width:70%;height:12px;"></div>
+    </div>
+  `).join('');
+}
+
+if(activeSheetUrl){
+  // 有設定試算表:先顯示載入中的骨架卡片,避免一開始就閃出示範資料、資料回來又整批跳換
+  renderLoadingSkeleton();
+} else {
+  // 沒有設定試算表(理論上不會發生,保留當保險):直接顯示示範資料
+  rebuildCategoryUI();
+  rebuildShiftUI();
+  rebuildRestUI();
+  rebuildCityUI();
+  renderStats();
+  update();
+}
+
+// 背景 3D 地球:發光網絡點狀風格,平滑跟隨捲動距離轉動(有慣性感),同時疊加緩慢自轉,不會死板
+(function(){
+  if(typeof THREE === 'undefined') return;
+  const container = document.getElementById('bgGlobe');
+  if(!container) return;
+
+  const width = container.clientWidth, height = container.clientHeight;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000);
+  camera.position.z = 5.4;
+
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  const globeGroup = new THREE.Group();
+  globeGroup.rotation.x = 0.3; // 固定傾斜角度,避免看起來太死板
+  scene.add(globeGroup);
+
+  // 經緯線框架
+  const wireGeo = new THREE.SphereGeometry(2, 26, 18);
+  const wireMat = new THREE.MeshBasicMaterial({ color: 0x7C93F2, wireframe:true, transparent:true, opacity:0.16 });
+  globeGroup.add(new THREE.Mesh(wireGeo, wireMat));
+
+  // 網絡光點(用費氏球面均勻分佈,模擬節點/城市光點)
+  const dotCount = 1600;
+  const positions = new Float32Array(dotCount*3);
+  const colors = new Float32Array(dotCount*3);
+  // 以冷色系(青綠、藍紫)為主,跟深藍背景協調;金色只當稀疏點綴,不要五色平均散佈太花
+  const mainPalette = [[0x4F,0xBF,0xAE],[0x7C,0x93,0xF2],[0x5F,0xA8,0xD3],[0x4F,0xBF,0xAE],[0x7C,0x93,0xF2]];
+  const accentColor = [0xF2,0xA9,0x3D];
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  for(let i=0;i<dotCount;i++){
+    const y = 1 - (i/(dotCount-1))*2;
+    const radiusAtY = Math.sqrt(Math.max(0, 1-y*y));
+    const theta = goldenAngle * i;
+    const x = Math.cos(theta)*radiusAtY;
+    const z = Math.sin(theta)*radiusAtY;
+    positions[i*3] = x*2.03; positions[i*3+1] = y*2.03; positions[i*3+2] = z*2.03;
+    const c = (i % 9 === 0) ? accentColor : mainPalette[i % mainPalette.length]; // 每 9 顆才出現一顆金色點綴
+    colors[i*3] = c[0]/255; colors[i*3+1] = c[1]/255; colors[i*3+2] = c[2]/255;
+  }
+  const dotGeo = new THREE.BufferGeometry();
+  dotGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  dotGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const dotMat = new THREE.PointsMaterial({ size:0.032, vertexColors:true, transparent:true, opacity:0.9, sizeAttenuation:true });
+  globeGroup.add(new THREE.Points(dotGeo, dotMat));
+
+  // 外圍柔和光暈,增加科技感
+  const glowGeo = new THREE.SphereGeometry(2.2, 24, 18);
+  const glowMat = new THREE.MeshBasicMaterial({ color:0x4FBFAE, transparent:true, opacity:0.04 });
+  globeGroup.add(new THREE.Mesh(glowGeo, glowMat));
+
+  let targetRotY = 0, currentRotY = 0, idleT = 0;
+  window.addEventListener('scroll', ()=>{
+    targetRotY = window.scrollY * 0.0016; // 捲動距離換算成目標旋轉角度
+  }, { passive:true });
+
+  function animate(){
+    requestAnimationFrame(animate);
+    idleT += 0.0012; // 緩慢自轉,就算不捲動也不會死氣沉沉
+    currentRotY += (targetRotY - currentRotY) * 0.055; // 平滑跟隨,製造自然的慣性感,不是瞬間對應
+    globeGroup.rotation.y = currentRotY + idleT;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', ()=>{
+    const w = container.clientWidth, h = container.clientHeight;
+    if(!w || !h) return;
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+})();
 
 // 回到頂端按鈕:捲動超過一段距離才出現,點擊平滑捲回最上方
 (function(){
@@ -1154,28 +1299,41 @@ update();
   });
 })();
 
-// 桌面版:捲動到地圖區塊時自動收合篩選列,捲回卡片區時自動展開(手機版走底部滑出面板,不受影響)
+// 桌面版:往下捲動就自動收合篩選列,往上捲動就自動展開回來(手機版走底部滑出面板,不受影響)
 (function(){
-  const mapEl = document.getElementById('map');
   const filterbarEl = document.getElementById('filterbar');
-  if(!mapEl || !filterbarEl) return;
-  const SCROLL_THRESHOLD = 160; // 至少要真的往下捲動這麼多,才允許自動收合;避免頁面太短(例如搜尋 0 筆結果)時誤判
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      const isDesktop = window.matchMedia('(min-width: 721px)').matches;
-      const hasScrolledEnough = window.scrollY > SCROLL_THRESHOLD;
-      if(isDesktop && entry.isIntersecting && hasScrolledEnough){
-        filterbarEl.classList.add('collapsed');
-      } else {
-        filterbarEl.classList.remove('collapsed');
-      }
-    });
-  }, { threshold: 0.05 });
-  observer.observe(mapEl);
+  if(!filterbarEl) return;
+  const SCROLL_THRESHOLD = 120; // 至少往下捲動這麼多才開始收合,避免一開始滑一點點就收起來
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  function handleScroll(){
+    const isDesktop = window.matchMedia('(min-width: 721px)').matches;
+    if(!isDesktop){ filterbarEl.classList.remove('collapsed'); ticking = false; return; }
+
+    const currentY = window.scrollY;
+    const scrollingDown = currentY > lastY;
+
+    if(currentY <= SCROLL_THRESHOLD){
+      filterbarEl.classList.remove('collapsed');
+    } else if(scrollingDown){
+      filterbarEl.classList.add('collapsed');
+    } else {
+      filterbarEl.classList.remove('collapsed');
+    }
+
+    lastY = currentY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){
+      requestAnimationFrame(handleScroll);
+      ticking = true;
+    }
+  }, { passive: true });
 })();
 
-const overrideUrl = new URLSearchParams(location.search).get('sheet');
-const activeSheetUrl = overrideUrl || SHEET_URL;
 if(activeSheetUrl){ loadFromSheet(activeSheetUrl); }
 </script>
 </body>
