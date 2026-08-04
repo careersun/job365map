@@ -87,7 +87,7 @@
   .stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);margin-bottom:24px;}
   .stats b{color:var(--text);font-size:16px;font-weight:600;}
 
-  .filterbar{position:sticky;top:0;z-index:20;background:rgba(22,29,46,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;flex-direction:column;gap:12px;max-height:600px;overflow:hidden;transition:max-height .32s ease, padding .32s ease, border-color .32s ease;}
+  .filterbar{position:sticky;top:0;z-index:20;background:rgba(22,29,46,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;flex-direction:column;gap:12px;max-height:600px;overflow:hidden;transition:max-height .32s ease, padding .32s ease, border-color .32s ease;}
   .filterbar__scroll{display:contents;} /* 桌面版:包裹用的div不影響原本flex排版,手機版才會改成真正的捲動容器 */
   .filterbar.collapsed{max-height:0;padding-top:0;padding-bottom:0;border-bottom-color:transparent;}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -1222,7 +1222,7 @@ if(activeSheetUrl){
 
   const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
   renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   container.appendChild(renderer.domElement);
 
   const globeGroup = new THREE.Group();
@@ -1230,12 +1230,12 @@ if(activeSheetUrl){
   scene.add(globeGroup);
 
   // 經緯線框架
-  const wireGeo = new THREE.SphereGeometry(2, 26, 18);
+  const wireGeo = new THREE.SphereGeometry(2, 18, 12);
   const wireMat = new THREE.MeshBasicMaterial({ color: 0x7C93F2, wireframe:true, transparent:true, opacity:0.16 });
   globeGroup.add(new THREE.Mesh(wireGeo, wireMat));
 
   // 網絡光點(用費氏球面均勻分佈,模擬節點/城市光點)
-  const dotCount = 1600;
+  const dotCount = 900;
   const positions = new Float32Array(dotCount*3);
   const colors = new Float32Array(dotCount*3);
   // 以冷色系(青綠、藍紫)為主,跟深藍背景協調;金色只當稀疏點綴,不要五色平均散佈太花
@@ -1263,14 +1263,19 @@ if(activeSheetUrl){
     targetRotY = window.scrollY * 0.0016; // 捲動距離換算成目標旋轉角度
   }, { passive:true });
 
-  function animate(){
+  const FRAME_INTERVAL = 1000/30; // 限制在約 30fps,不用跟捲動全速搶資源
+  let lastFrameTime = 0;
+  function animate(now){
     requestAnimationFrame(animate);
-    idleT += 0.0012; // 緩慢自轉,就算不捲動也不會死氣沉沉
-    currentRotY += (targetRotY - currentRotY) * 0.055; // 平滑跟隨,製造自然的慣性感,不是瞬間對應
+    if(document.hidden) return; // 分頁切到背景時暫停渲染,節省效能
+    if(now - lastFrameTime < FRAME_INTERVAL) return;
+    lastFrameTime = now;
+    idleT += 0.0024; // 緩慢自轉,就算不捲動也不會死氣沉沉(降頻率後補一點速度維持原本手感)
+    currentRotY += (targetRotY - currentRotY) * 0.1; // 平滑跟隨,製造自然的慣性感,不是瞬間對應
     globeGroup.rotation.y = currentRotY + idleT;
     renderer.render(scene, camera);
   }
-  animate();
+  requestAnimationFrame(animate);
 
   window.addEventListener('resize', ()=>{
     const w = container.clientWidth, h = container.clientHeight;
