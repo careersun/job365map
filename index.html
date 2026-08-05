@@ -87,9 +87,10 @@
   .stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);margin-bottom:24px;}
   .stats b{color:var(--text);font-size:16px;font-weight:600;}
 
-  .filterbar{position:sticky;top:0;z-index:20;background:rgba(22,29,46,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;flex-direction:column;gap:12px;max-height:600px;overflow:hidden;transition:max-height .32s ease, padding .32s ease, border-color .32s ease;}
-  .filterbar__scroll{display:contents;} /* 桌面版:包裹用的div不影響原本flex排版,手機版才會改成真正的捲動容器 */
-  .filterbar.collapsed{max-height:0;padding-top:0;padding-bottom:0;border-bottom-color:transparent;}
+  .filterbar{position:sticky;top:0;z-index:20;background:rgba(22,29,46,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--border);display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s ease, border-color .32s ease;}
+  .filterbar__scroll{overflow:hidden;min-height:0;display:flex;flex-direction:column;gap:12px;padding:16px 32px;transition:padding .28s ease;}
+  .filterbar.collapsed{grid-template-rows:0fr;border-bottom-color:transparent;}
+  .filterbar.collapsed .filterbar__scroll{padding-top:0;padding-bottom:0;}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
   .row--scroll{
     flex-wrap:nowrap;
@@ -1304,25 +1305,44 @@ if(activeSheetUrl){
   const filterbarEl = document.getElementById('filterbar');
   if(!filterbarEl) return;
   const SCROLL_THRESHOLD = 120; // 至少往下捲動這麼多才開始收合,避免一開始滑一點點就收起來
+  const DIRECTION_BUFFER = 14; // 同一個方向要累積這麼多距離才會真的觸發切換,過濾掉細微的抖動
+  const MIN_TOGGLE_INTERVAL = 220; // 兩次切換之間至少間隔這麼多毫秒,避免快速來回閃爍
+
   let lastY = window.scrollY;
+  let accumUp = 0, accumDown = 0;
+  let isCollapsed = false;
+  let lastToggleTime = 0;
   let ticking = false;
+
+  function setCollapsed(next, now){
+    if(next === isCollapsed) return;
+    filterbarEl.classList.toggle('collapsed', next);
+    isCollapsed = next;
+    lastToggleTime = now;
+    accumUp = 0; accumDown = 0;
+  }
 
   function handleScroll(){
     const isDesktop = window.matchMedia('(min-width: 721px)').matches;
-    if(!isDesktop){ filterbarEl.classList.remove('collapsed'); ticking = false; return; }
+    if(!isDesktop){ setCollapsed(false, performance.now()); ticking = false; return; }
 
     const currentY = window.scrollY;
-    const scrollingDown = currentY > lastY;
+    const delta = currentY - lastY;
+    lastY = currentY;
+    if(delta > 0){ accumDown += delta; accumUp = 0; }
+    else if(delta < 0){ accumUp += -delta; accumDown = 0; }
+
+    const now = performance.now();
+    const canToggle = (now - lastToggleTime) > MIN_TOGGLE_INTERVAL;
 
     if(currentY <= SCROLL_THRESHOLD){
-      filterbarEl.classList.remove('collapsed');
-    } else if(scrollingDown){
-      filterbarEl.classList.add('collapsed');
-    } else {
-      filterbarEl.classList.remove('collapsed');
+      if(canToggle) setCollapsed(false, now);
+    } else if(accumDown > DIRECTION_BUFFER && canToggle){
+      setCollapsed(true, now);
+    } else if(accumUp > DIRECTION_BUFFER && canToggle){
+      setCollapsed(false, now);
     }
 
-    lastY = currentY;
     ticking = false;
   }
 
