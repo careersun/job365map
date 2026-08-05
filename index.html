@@ -87,7 +87,7 @@
   .stats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);margin-bottom:24px;}
   .stats b{color:var(--text);font-size:16px;font-weight:600;}
 
-  .filterbar{position:sticky;top:0;z-index:20;background:rgba(22,29,46,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--border);display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s ease, border-color .32s ease;}
+  .filterbar{position:sticky;top:0;z-index:20;background:rgba(22,29,46,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid var(--border);display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s ease, border-color .32s ease;contain:layout;}
   .filterbar__scroll{overflow:hidden;min-height:0;display:flex;flex-direction:column;gap:12px;padding:16px 32px;transition:padding .28s ease;}
   .filterbar.collapsed{grid-template-rows:0fr;border-bottom-color:transparent;}
   .filterbar.collapsed .filterbar__scroll{padding-top:0;padding-bottom:0;}
@@ -1305,26 +1305,45 @@ if(activeSheetUrl){
   const filterbarEl = document.getElementById('filterbar');
   if(!filterbarEl) return;
   const SCROLL_THRESHOLD = 120; // 至少往下捲動這麼多才開始收合,避免一開始滑一點點就收起來
-  const DIRECTION_BUFFER = 14; // 同一個方向要累積這麼多距離才會真的觸發切換,過濾掉細微的抖動
-  const MIN_TOGGLE_INTERVAL = 220; // 兩次切換之間至少間隔這麼多毫秒,避免快速來回閃爍
+  const DIRECTION_BUFFER = 28; // 同一個方向要累積這麼多距離才會真的觸發切換,過濾掉細微的抖動(加大避免誤判)
+  const TRANSITION_MS = 320; // 需與 CSS .filterbar 的 transition 時間一致
+  const SETTLE_MS = 90; // 動畫結束後,再多等一小段時間讓瀏覽器的捲動位置穩定下來
+  const MIN_TOGGLE_INTERVAL = TRANSITION_MS + SETTLE_MS; // 一定要等上一次收合/展開動畫真正做完,才允許下一次切換
 
   let lastY = window.scrollY;
   let accumUp = 0, accumDown = 0;
   let isCollapsed = false;
   let lastToggleTime = 0;
   let ticking = false;
+  let animating = false; // 收合/展開動畫進行中時鎖住,避免版面高度變化又觸發捲動事件,形成「收合→展開→收合…」的連鎖抖動
 
   function setCollapsed(next, now){
-    if(next === isCollapsed) return;
+    if(next === isCollapsed || animating) return;
     filterbarEl.classList.toggle('collapsed', next);
     isCollapsed = next;
     lastToggleTime = now;
     accumUp = 0; accumDown = 0;
+    animating = true;
+    // 篩選列的高度變化,可能讓瀏覽器悄悄修正目前的捲動位置(尤其頁面靠近底部時),
+    // 這會被誤判成「使用者又捲動了一次」而立刻觸發下一次切換。等動畫真正結束後,
+    // 重新校正 lastY 當作新基準,避免這種假捲動造成的抖動/卡頓。
+    setTimeout(()=>{
+      animating = false;
+      lastY = window.scrollY;
+      accumUp = 0; accumDown = 0;
+    }, MIN_TOGGLE_INTERVAL);
   }
 
   function handleScroll(){
     const isDesktop = window.matchMedia('(min-width: 721px)').matches;
-    if(!isDesktop){ setCollapsed(false, performance.now()); ticking = false; return; }
+    if(!isDesktop){
+      if(isCollapsed){ filterbarEl.classList.remove('collapsed'); isCollapsed = false; }
+      lastY = window.scrollY;
+      ticking = false;
+      return;
+    }
+
+    if(animating){ ticking = false; return; } // 動畫進行中,先不累積捲動距離,避免高度變化造成的假訊號
 
     const currentY = window.scrollY;
     const delta = currentY - lastY;
