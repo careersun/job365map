@@ -134,7 +134,8 @@
   .hint button{background:none;border:none;color:var(--periwinkle);cursor:pointer;text-decoration:underline;font-size:12px;padding:0;}
 
   .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:16px 32px 48px;}
-  .card{position:relative;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px 22px;cursor:pointer;transition:transform .15s, border-color .15s, background .15s;overflow:hidden;display:flex;flex-direction:column;}
+  .card{position:relative;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px 22px;cursor:pointer;transition:transform .15s, border-color .15s, background .15s;overflow:hidden;display:flex;flex-direction:column;animation:cardFadeIn .45s ease backwards;}
+  @keyframes cardFadeIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
   .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--card-color,var(--teal));}
   .card:hover{transform:translateY(-2px);background:var(--bg-panel-hi);border-color:var(--text-faint);}
   .card.highlight{
@@ -155,7 +156,9 @@
   .badge--type{background:rgba(139,147,161,.15);color:var(--text-muted);}
   .badge--new{background:rgba(242,169,61,.15);color:var(--gold);}
   .card__title{font-family:var(--font-display);font-size:17.5px;font-weight:700;margin:0 0 5px;line-height:1.4;}
-  .card__company{font-size:11.5px;color:var(--text-faint);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+  .card__company-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .card__company{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:0;}
+  .company-avatar{flex-shrink:0;width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;}
   .card__meta{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);flex-wrap:wrap;}
   .card__meta .mono{font-family:var(--font-mono);}
   .card__meta-list{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
@@ -693,6 +696,17 @@ function getFiltered(){
 }
 
 /* ---------------- 卡片內容(職缺列表卡片、地圖彈窗共用) ---------------- */
+// 依公司名稱產生固定的色塊頭像(同一家公司永遠同一個顏色跟字母,不用真的圖片)
+function companyAvatarHTML(company){
+  const name = (company || '').trim();
+  if(!name) return '';
+  let hash = 0;
+  for(let i=0;i<name.length;i++){ hash = (hash*31 + name.charCodeAt(i)) & 0xffffffff; }
+  const color = PALETTE[Math.abs(hash) % PALETTE.length];
+  const initial = name.charAt(0).toUpperCase();
+  return `<div class="company-avatar" style="background:color-mix(in srgb, ${color} 22%, transparent);color:${color};border:1px solid color-mix(in srgb, ${color} 40%, transparent);">${initial}</div>`;
+}
+
 function jobInnerHTML(job){
   return `
       <div class="card__top">
@@ -705,7 +719,10 @@ function jobInnerHTML(job){
         ${isNew(job)?'<span class="badge badge--new">本週新增</span>':''}
       </div>
       <h3 class="card__title">${job.title}</h3>
-      <div class="card__company">${job.company}</div>
+      <div class="card__company-row">
+        ${companyAvatarHTML(job.company)}
+        <div class="card__company">${job.company}</div>
+      </div>
       <div class="card__meta-list">
         <div class="meta-row"><span class="meta-row__icon" title="地區">${ICON_PIN}</span><span class="meta-row__value">${job.city}</span></div>
         ${job.workHours ? `<div class="meta-row"><span class="meta-row__icon" title="上班時間">${ICON_CLOCK}</span><span class="meta-row__value">${job.workHours}</span></div>` : ''}
@@ -731,10 +748,11 @@ function renderList(items){
     document.getElementById('emptyResetBtn').addEventListener('click', clearAllFilters);
     return;
   }
-  items.forEach(job=>{
+  items.forEach((job, idx)=>{
     const card = document.createElement('article');
     card.className = 'card' + (job.id===state.activeId?' highlight':'');
     card.style.setProperty('--card-color', CAT_COLOR[job.category] || COLORS.teal);
+    card.style.animationDelay = `${Math.min(idx, 10) * 45}ms`; // 依序淡入,超過10張之後就不再繼續延遲,避免捲很多才看到底下的卡片
     card.dataset.id = job.id;
     card.innerHTML = jobInnerHTML(job);
     card.addEventListener('click', (e)=>{
