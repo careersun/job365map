@@ -518,9 +518,25 @@ function deriveCategories(data){
   return {cats:set, colorMap:map};
 }
 
+// 台灣縣市由北到南、東部、離島的地理順序,用來排序縣市選單;不在清單裡的(例如海外城市、或包含區名的完整地址)會排在最後面,彼此之間維持原本字母排序
+const TAIWAN_CITY_ORDER = [
+  '基隆','台北','臺北','新北','桃園','新竹市','新竹縣','新竹',
+  '苗栗','台中','臺中','彰化','南投','雲林',
+  '嘉義市','嘉義縣','嘉義','台南','臺南','高雄','屏東',
+  '宜蘭','花蓮','台東','臺東',
+  '澎湖','金門','連江'
+];
+function cityRank(city){
+  const idx = TAIWAN_CITY_ORDER.findIndex(name=> city.includes(name));
+  return idx === -1 ? TAIWAN_CITY_ORDER.length : idx;
+}
+
 function rebuildCityUI(){
   const cityFilter = document.getElementById('cityFilter');
-  const cities = [...new Set(DATA.map(j=>j.city).filter(Boolean))].sort((a,b)=> a.localeCompare(b,'zh-Hant'));
+  const cities = [...new Set(DATA.map(j=>j.city).filter(Boolean))].sort((a,b)=>{
+    const rankDiff = cityRank(a) - cityRank(b);
+    return rankDiff !== 0 ? rankDiff : a.localeCompare(b,'zh-Hant');
+  });
   cityFilter.innerHTML = '<option value="all">全部縣市</option>' + cities.map(c=> `<option value="${c}">${c}</option>`).join('');
   state.city = 'all';
   cityFilter.value = 'all';
