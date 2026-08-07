@@ -463,13 +463,13 @@ let DATA = [
 const DEMO_DATA = DATA; // 保留參照,方便之後判斷「現在畫面上是不是還在用示範資料」
 
 /* ---------------- STATE ---------------- */
-const state = { query:'', region:'all', city:'all', sort:'hot', cats:new Set(), shifts:new Set(), rests:new Set(), remoteOnly:false, activeId:null };
+const state = { query:'', region:'all', city:'all', sort:'daily', cats:new Set(), shifts:new Set(), rests:new Set(), remoteOnly:false, activeId:null };
 const REGIONS = [
   {key:'all', label:'全部'}, {key:'taiwan', label:'台灣'},
   {key:'foreign', label:'外商'},
 ];
 const SORTS = [
-  {key:'hot', label:'熱門點閱'}, {key:'remote', label:'全遠端'}, {key:'new', label:'本週新增'},
+  {key:'daily', label:'每日精選'}, {key:'hot', label:'熱門點閱'}, {key:'remote', label:'全遠端'}, {key:'new', label:'本週新增'},
 ];
 
 /* ---------------- HERO SKY ---------------- */
@@ -622,7 +622,7 @@ document.getElementById('filterApplyBtn').addEventListener('click', closeFilterS
 
 document.getElementById('cityFilter').addEventListener('change', e=>{ state.city = e.target.value; update(); });
 function clearAllFilters(){
-  state.query=''; state.region='all'; state.city='all'; state.sort='hot';
+  state.query=''; state.region='all'; state.city='all'; state.sort='daily';
   state.cats.clear(); state.shifts.clear(); state.rests.clear(); state.remoteOnly=false;
   document.getElementById('searchInput').value=''; document.getElementById('remoteOnly').checked=false;
   document.getElementById('cityFilter').value='all';
@@ -705,10 +705,35 @@ function getFiltered(){
     }
     return true;
   });
+  if(state.sort==='daily') arr = dailyShuffle(arr);
   if(state.sort==='hot') arr.sort((a,b)=> b.views - a.views);
   if(state.sort==='remote') arr.sort((a,b)=> (b.remote-a.remote) || (b.views-a.views));
   if(state.sort==='new') arr.sort((a,b)=> b.updated - a.updated);
   return arr;
+}
+
+// 依「今天的日期」當固定種子做洗牌:同一天所有人看到的順序都一樣,換一天自動變成不同順序,不用手動操作、不看任何數據
+function seededRandom(seed){
+  let s = seed % 2147483647;
+  if(s <= 0) s += 2147483646;
+  return function(){
+    s = (s * 16807) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+function dailySeed(){
+  const d = new Date();
+  const dateStr = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  let hash = 0;
+  for(let i=0;i<dateStr.length;i++){ hash = (hash*31 + dateStr.charCodeAt(i)) | 0; }
+  return Math.abs(hash) || 1;
+}
+function dailyShuffle(arr){
+  const rand = seededRandom(dailySeed());
+  return arr
+    .map(job => ({ job, key: rand() }))
+    .sort((a,b) => a.key - b.key)
+    .map(x => x.job);
 }
 
 /* ---------------- 卡片內容(職缺列表卡片、地圖彈窗共用) ---------------- */
@@ -1044,7 +1069,7 @@ function update(){
   }
 
   // 手機版篩選按鈕上的已套用數量徽章、面板底部「顯示 N 筆結果」按鈕
-  const activeCount = (state.region!=='all'?1:0) + (state.city!=='all'?1:0) + (state.sort!=='hot'?1:0)
+  const activeCount = (state.region!=='all'?1:0) + (state.city!=='all'?1:0) + (state.sort!=='daily'?1:0)
     + state.cats.size + state.shifts.size + state.rests.size + (state.remoteOnly?1:0);
   const badge = document.getElementById('filterFabBadge');
   badge.textContent = activeCount;
