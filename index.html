@@ -42,7 +42,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.css">
 <style>
   :root{
     --bg:#12151C; --bg-panel:#191E27; --bg-panel-hi:#212838; --border:#2A3140;
@@ -184,15 +184,14 @@
   .map-head h2{font-family:var(--font-display);font-size:20px;margin:0;font-weight:600;}
   .map-head p{margin:0;font-size:12px;color:var(--text-faint);font-family:var(--font-mono);}
   #map{height:460px;border-radius:14px;border:1px solid var(--border);position:relative;z-index:1;isolation:isolate;}
-  #map .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.6);}
   @keyframes markerPulse{
     0%{ box-shadow:0 0 0 0 var(--pulse-color, rgba(242,169,61,.6)); }
     70%{ box-shadow:0 0 0 14px transparent; }
     100%{ box-shadow:0 0 0 0 transparent; }
   }
   .marker-active-pulse{ animation:markerPulse 1.4s ease-out 2; }
-  .leaflet-popup-content-wrapper{background:var(--bg-panel);color:var(--text);border-radius:10px;}
-  .leaflet-popup-tip{background:var(--bg-panel);}
+  .maplibregl-popup-content{background:var(--bg-panel);color:var(--text);border-radius:10px;}
+  .maplibregl-popup-tip{border-top-color:var(--bg-panel);border-bottom-color:var(--bg-panel);}
   .popup__cat{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:var(--pop-color,var(--teal));}
   .popup__title{font-weight:600;font-size:14px;margin:2px 0;}
   .popup__meta{font-size:12px;color:var(--text-muted);}
@@ -408,7 +407,7 @@
   地圖資料 © OpenStreetMap 貢獻者。職缺資料來自你所連接的 Google 試算表(未連接時顯示虛構範例資料)。
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/5.24.0/maplibre-gl.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -669,14 +668,20 @@ function syncTabs(){
 }
 
 /* ---------------- MAP ---------------- */
-const map = L.map('map', { scrollWheelZoom:false }).setView([23.9, 121.0], 3);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap 貢獻者', maxZoom: 19 }).addTo(map);
-const markerLayer = L.layerGroup().addTo(map);
+const map = new maplibregl.Map({
+  container: 'map',
+  style: 'https://tiles.openfreemap.org/styles/dark',
+  center: [121.0, 23.9],
+  zoom: 3
+});
+map.scrollZoom.disable();
 let markers = {};
-function makeIcon(color, active){
+function makeMarkerEl(color, active){
   const s = active?24:12;
   const pulseClass = active ? 'marker-active-pulse' : '';
-  return L.divIcon({ className:'', html:`<div class="${pulseClass}" style="--pulse-color:${color}99;width:${s}px;height:${s}px;border-radius:50%;background:${color};border:2px solid #12151C;box-shadow:0 0 0 ${active?5:0}px ${color}55;transition:width .25s,height .25s;"></div>`, iconSize:[s,s], iconAnchor:[s/2,s/2] });
+  const el = document.createElement('div');
+  el.innerHTML = `<div class="${pulseClass}" style="--pulse-color:${color}99;width:${s}px;height:${s}px;border-radius:50%;background:${color};border:2px solid #12151C;box-shadow:0 0 0 ${active?5:0}px ${color}55;transition:width .25s,height .25s;"></div>`;
+  return el.firstElementChild;
 }
 
 /* ---------------- FILTER / SORT LOGIC ---------------- */
@@ -962,7 +967,7 @@ function switchToJob(id){
   document.querySelectorAll('.card').forEach(c=> c.classList.toggle('highlight', Number(c.dataset.id)===id));
   showJobModal(job, true);
   if(job.lat!=null && job.lng!=null){
-    map.panTo([job.lat, job.lng], { animate:true, duration:.6 });
+    map.panTo([job.lng, job.lat], { duration:600 });
   }
 }
 
@@ -971,8 +976,7 @@ function pulseNearbyMarkers(job){
   if(!job || job.lat==null || job.lng==null) return;
   getNearbyJobs(job, 4).forEach(({job:j})=>{
     const m = markers[j.id];
-    const el = m && m.getElement && m.getElement();
-    const inner = el && el.querySelector('div');
+    const inner = m && m.getElement && m.getElement();
     if(inner){
       inner.classList.remove('marker-active-pulse');
       void inner.offsetWidth; // 強制 reflow,讓動畫可以重新觸發
@@ -993,17 +997,19 @@ document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideJobModal();
 
 /* ---------------- RENDER MAP ---------------- */
 function renderMap(items){
-  markerLayer.clearLayers(); markers = {};
+  Object.values(markers).forEach(m=> m.remove());
+  markers = {};
   items.forEach(job=>{
     if(job.lat==null || job.lng==null || isNaN(job.lat) || isNaN(job.lng)) return;
-    const m = L.marker([job.lat, job.lng], { icon: makeIcon(CAT_COLOR[job.category] || COLORS.teal, job.id===state.activeId) });
-    m.bindPopup(`<div style="--pop-color:${CAT_COLOR[job.category]||COLORS.teal}"><div class="popup__cat">${job.category}</div><div class="popup__title">${job.title}</div><div class="popup__meta">${job.company} · ${job.city}${job.remote?' · 可遠端':''}</div><div class="popup__hint" data-id="${job.id}">點一下查看完整詳情<span class="popup__hint-arrow">→</span></div></div>`);
-    m.on('popupopen', (e)=>{
-      const hintEl = e.popup.getElement()?.querySelector('.popup__hint');
+    const color = CAT_COLOR[job.category] || COLORS.teal;
+    const el = makeMarkerEl(color, job.id===state.activeId);
+    const popup = new maplibregl.Popup({ offset: 14 }).setHTML(`<div style="--pop-color:${color}"><div class="popup__cat">${job.category}</div><div class="popup__title">${job.title}</div><div class="popup__meta">${job.company} · ${job.city}${job.remote?' · 可遠端':''}</div><div class="popup__hint" data-id="${job.id}">點一下查看完整詳情<span class="popup__hint-arrow">→</span></div></div>`);
+    popup.on('open', ()=>{
+      const hintEl = popup.getElement()?.querySelector('.popup__hint');
       if(hintEl) hintEl.addEventListener('click', ()=> switchToJob(job.id));
     });
-    m.on('click', ()=> switchToJob(job.id));
-    m.addTo(markerLayer);
+    const m = new maplibregl.Marker({ element: el }).setLngLat([job.lng, job.lat]).setPopup(popup).addTo(map);
+    el.addEventListener('click', ()=> switchToJob(job.id));
     markers[job.id] = m;
   });
 }
@@ -1036,8 +1042,8 @@ function focusJob(id, flyMap){
   if(job && flyMap && job.lat!=null && job.lng!=null){
     const targetZoom = job.overseas ? 7 : 14; // 放大幅度加強,尤其是台灣本地職缺會拉得更近
     const doFly = ()=>{
-      map.flyTo([job.lat, job.lng], targetZoom, { duration:1 });
-      markers[id] && setTimeout(()=> markers[id].openPopup(), 550);
+      map.flyTo({ center:[job.lng, job.lat], zoom: targetZoom, duration:1000 });
+      markers[id] && setTimeout(()=> markers[id].togglePopup(), 550);
     };
     // 先捲動到地圖區塊,捲動結束後才開始放大聚焦,順序清楚不會兩個動作打架(桌面版、手機版都適用)
     document.getElementById('map').scrollIntoView({ behavior:'smooth', block:'center' });
