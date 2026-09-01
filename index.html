@@ -190,8 +190,20 @@
     100%{ box-shadow:0 0 0 0 transparent; }
   }
   .marker-active-pulse{ animation:markerPulse 1.4s ease-out 2; }
+  .maplibregl-popup{animation:popupFadeIn .2s ease;}
+  @keyframes popupFadeIn{ from{opacity:0;} to{opacity:1;} }
   .maplibregl-popup-content{background:var(--bg-panel);color:var(--text);border-radius:10px;}
   .maplibregl-popup-tip{border-top-color:var(--bg-panel);border-bottom-color:var(--bg-panel);}
+  .maplibregl-popup-close-button{
+    top:8px;right:8px;width:24px;height:24px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--bg-panel);color:var(--text-muted);
+    border:1px solid var(--border);border-radius:50%;
+    font-size:15px;line-height:1;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);
+    transition:all .15s;
+  }
+  .maplibregl-popup-close-button:hover{color:var(--text);border-color:var(--text-muted);background:var(--bg-panel);}
   .popup__cat{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;color:var(--pop-color,var(--teal));}
   .popup__title{font-weight:600;font-size:14px;margin:2px 0;}
   .popup__meta{font-size:12px;color:var(--text-muted);}
@@ -680,7 +692,7 @@ function makeMarkerEl(color, active){
   const s = active?24:12;
   const pulseClass = active ? 'marker-active-pulse' : '';
   const el = document.createElement('div');
-  el.innerHTML = `<div class="${pulseClass}" style="--pulse-color:${color}99;width:${s}px;height:${s}px;border-radius:50%;background:${color};border:2px solid #12151C;box-shadow:0 0 0 ${active?5:0}px ${color}55;transition:width .25s,height .25s;"></div>`;
+  el.innerHTML = `<div class="${pulseClass}" style="--pulse-color:${color}99;width:${s}px;height:${s}px;border-radius:50%;background:${color};border:2px solid #12151C;box-shadow:0 0 0 ${active?5:0}px ${color}55;transition:width .25s ease,height .25s ease,box-shadow .25s ease;"></div>`;
   return el.firstElementChild;
 }
 
@@ -936,8 +948,7 @@ function openJobFromUrlParam(){
   const job = findJobBySlug(slug);
   if(!job){ console.warn('職缺地圖:網址帶的職缺參數找不到對應職缺 —', slug); return; }
   console.info('職缺地圖:從分享連結開啟職缺 —', job.title, job.company);
-  state.activeId = job.id;
-  renderMap(getFiltered());
+  setActiveMarker(job.id);
   setTimeout(()=> showJobModal(job, false), 300); // 稍微延遲,確保地圖跟卡片都已經渲染完成
 }
 async function shareJob(job, btnEl){
@@ -962,12 +973,10 @@ async function shareJob(job, btnEl){
 function switchToJob(id){
   const job = DATA.find(j=>j.id===id);
   if(!job) return;
-  state.activeId = id;
-  renderMap(getFiltered());
-  document.querySelectorAll('.card').forEach(c=> c.classList.toggle('highlight', Number(c.dataset.id)===id));
+  setActiveMarker(id);
   showJobModal(job, true);
   if(job.lat!=null && job.lng!=null){
-    map.panTo([job.lng, job.lat], { duration:600 });
+    map.panTo([job.lng, job.lat], { duration:550, essential:true });
   }
 }
 
@@ -994,6 +1003,30 @@ function hideJobModal(){
 jobModalClose.addEventListener('click', hideJobModal);
 jobModalBackdrop.addEventListener('click', (e)=>{ if(e.target === jobModalBackdrop) hideJobModal(); });
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') hideJobModal(); });
+
+// 只切換哪個 marker 是「目前選中」的狀態,重用既有的 marker DOM,不整批砍掉重建
+// (整批重建會讓每個 marker 變成全新元素,原本設定好的 transition 就沒有起點可以動畫,看起來像用跳的)
+function setActiveMarker(newId){
+  state.activeId = newId;
+  Object.entries(markers).forEach(([jid, m])=>{
+    const el = m.getElement && m.getElement();
+    if(!el) return;
+    const isActive = Number(jid) === Number(newId);
+    const job = DATA.find(j=> j.id === Number(jid));
+    const color = (job && (CAT_COLOR[job.category] || COLORS.teal)) || COLORS.teal;
+    const s = isActive ? 24 : 12;
+    el.style.width = s+'px';
+    el.style.height = s+'px';
+    el.style.boxShadow = `0 0 0 ${isActive?5:0}px ${color}55`;
+    el.classList.remove('marker-active-pulse');
+    if(isActive){
+      void el.offsetWidth; // 強制 reflow,讓脈動動畫可以重新觸發
+      el.classList.add('marker-active-pulse');
+      setTimeout(()=> el.classList.remove('marker-active-pulse'), 3000);
+    }
+  });
+  document.querySelectorAll('.card').forEach(c=> c.classList.toggle('highlight', Number(c.dataset.id)===Number(newId)));
+}
 
 /* ---------------- RENDER MAP ---------------- */
 function renderMap(items){
@@ -1035,19 +1068,25 @@ function scrollCardFullyIntoView(el){
 }
 
 function focusJob(id, flyMap){
-  state.activeId = id;
   const job = DATA.find(j=>j.id===id);
-  document.querySelectorAll('.card').forEach(c=> c.classList.toggle('highlight', Number(c.dataset.id)===id));
-  renderMap(getFiltered());
+  setActiveMarker(id);
   if(job && flyMap && job.lat!=null && job.lng!=null){
     const targetZoom = job.overseas ? 7 : 14; // 放大幅度加強,尤其是台灣本地職缺會拉得更近
     const doFly = ()=>{
-      map.flyTo({ center:[job.lng, job.lat], zoom: targetZoom, duration:1000 });
-      markers[id] && setTimeout(()=> markers[id].togglePopup(), 550);
+      map.flyTo({ center:[job.lng, job.lat], zoom: targetZoom, duration:900, essential:true });
+      // 等飛行動畫真正結束(moveend)才開彈窗,不用猜時間點,飛行跟開窗才不會打架
+      map.once('moveend', ()=> { markers[id] && markers[id].togglePopup(); });
     };
-    // 先捲動到地圖區塊,捲動結束後才開始放大聚焦,順序清楚不會兩個動作打架(桌面版、手機版都適用)
+    // 先捲動到地圖區塊,等捲動實際結束後才開始飛行聚焦,順序清楚不會兩個動作打架(桌面版、手機版都適用)
+    let flown = false;
+    const startFly = ()=>{ if(flown) return; flown = true; doFly(); };
+    if('onscrollend' in window){
+      window.addEventListener('scrollend', startFly, { once:true });
+      setTimeout(startFly, 1200); // 保險:萬一瀏覽器沒有觸發 scrollend,還是要飛
+    } else {
+      setTimeout(startFly, 500); // 不支援 scrollend 的瀏覽器退回固定延遲
+    }
     document.getElementById('map').scrollIntoView({ behavior:'smooth', block:'center' });
-    setTimeout(doFly, 450);
   }
   if(job && !flyMap){
     const cardEl = document.querySelector(`.card[data-id="${id}"]`);
