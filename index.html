@@ -998,7 +998,13 @@ function pulseNearbyMarkers(job){
 function hideJobModal(){
   jobModalBackdrop.classList.remove('open');
   const job = lastShownJobId!=null ? DATA.find(j=>j.id===lastShownJobId) : null;
-  if(job) pulseNearbyMarkers(job);
+  if(job){
+    const m = markers[job.id];
+    const popup = m && m.getPopup && m.getPopup();
+    // 回到地圖上原本那張資訊小卡,而不是只留一個顏色點點
+    if(popup && !popup.isOpen()) m.togglePopup();
+    pulseNearbyMarkers(job);
+  }
 }
 jobModalClose.addEventListener('click', hideJobModal);
 jobModalBackdrop.addEventListener('click', (e)=>{ if(e.target === jobModalBackdrop) hideJobModal(); });
