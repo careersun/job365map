@@ -34,6 +34,9 @@ const CONFIG = {
   // 「立即應徵」按鈕連結（與地圖的 CONTACT_LINK 相同）
   APPLY_URL: "https://lin.ee/oX4esly",
 
+  // 每頁都會出現的主要關鍵字（標題、描述、頁首）
+  KEYWORD: "中基層求職職缺",
+
   // GA4 評估 ID（與地圖相同）；留空就不載入 GA
   GA4_ID: "G-21781Q6CNX",
 
@@ -247,8 +250,8 @@ function pageHtml(job, { closed }) {
   const url = `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${job.id}.html`;
   const loc = parseAddress(job.address);
   const area = [loc.addressRegion, loc.addressLocality !== loc.addressRegion ? loc.addressLocality : ""].join("");
-  const pageTitle = `${job.title}｜${area || "職缺"}｜${CONFIG.ORG.name}`;
-  const metaDesc = `${area}${job.title}，${job.salaryText || "薪資面議"}。${(job.description || "").replace(/\s+/g, " ").slice(0, 80)}`;
+  const pageTitle = `${job.title}｜${area ? area + " " : ""}${CONFIG.KEYWORD}｜JOB365`;
+  const metaDesc = `${CONFIG.KEYWORD}｜${area}${job.title}，${job.salaryText || "薪資面議"}。${(job.description || "").replace(/\s+/g, " ").slice(0, 80)}`;
   const section = (h, v) => (v ? `<section><h2>${h}</h2><p>${nl2br(v)}</p></section>` : "");
 
   return `<!doctype html>
@@ -259,6 +262,11 @@ function pageHtml(job, { closed }) {
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(metaDesc)}">
 <link rel="canonical" href="${url}">
+<link rel="icon" href="${CONFIG.SITE_URL}/favicon.png">
+<meta property="og:title" content="${esc(pageTitle)}">
+<meta property="og:description" content="${esc(metaDesc)}">
+<meta property="og:image" content="${CONFIG.SITE_URL}/og-image.png">
+<meta property="og:url" content="${url}">
 ${closed ? '<meta name="robots" content="noindex">' : `<script type="application/ld+json">\n${buildJsonLd(job)}\n</script>`}
 ${gaHead()}
 <style>
@@ -274,10 +282,15 @@ ${gaHead()}
   .cta{position:fixed;left:0;right:0;bottom:0;padding:12px 16px;background:var(--card);border-top:1px solid var(--line);display:flex;gap:12px;justify-content:center}
   .cta a{flex:1;max-width:340px;text-align:center;padding:12px;border-radius:10px;text-decoration:none;font-weight:600}
   .apply{background:var(--brand);color:#fff}.back{border:1px solid var(--line);color:var(--ink)}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);margin:0 0 16px}
+  .brand img{width:36px;height:36px;border-radius:9px}
+  .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
+  .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
 </style>
 </head>
 <body>
 <main>
+  <a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a>
   <article class="card">
     ${closed ? '<div class="closed">此職缺已停止招募，歡迎回到職缺地圖查看其他職缺。</div>' : ""}
     <h1>${esc(job.title)}</h1>
@@ -295,7 +308,6 @@ ${gaHead()}
     ${section("休假制度", job.restDay)}
     ${section("薪資待遇", job.salaryText)}
     ${section("福利", job.benefits)}
-    <p class="meta" style="margin-top:24px">刊登日期：${job.datePosted}${closed ? "" : `　·　有效至：${job.validThrough}`}</p>
   </article>
 </main>
 <nav class="cta">
@@ -314,12 +326,14 @@ function indexHtml(jobs) {
     .join("\n");
   return `<!doctype html>
 <html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>全部職缺｜${esc(CONFIG.ORG.name)}</title>
+<title>全部${CONFIG.KEYWORD}｜JOB365</title>
+<meta name="description" content="JOB365 ${CONFIG.KEYWORD}總覽，共 ${jobs.length} 筆招募中職缺，可依地區、薪資、班別快速找到適合的工作。">
+<link rel="icon" href="${CONFIG.SITE_URL}/favicon.png">
 <link rel="canonical" href="${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/">
 ${gaHead()}
 <style>body{margin:0;background:#f6f7f9;color:#1d2330;font:16px/1.8 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}main{max-width:720px;margin:0 auto;padding:24px 16px}a{color:#c2410c}small{color:#5b6475}
 @media (prefers-color-scheme:dark){body{background:#14171c;color:#e9ecf1}a{color:#fb923c}small{color:#a3abb9}}</style>
-</head><body><main><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
+</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部${CONFIG.KEYWORD}（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
 ${items}
 </ul></main></body></html>
 `;
