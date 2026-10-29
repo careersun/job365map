@@ -250,8 +250,15 @@ function pageHtml(job, { closed }) {
   const url = `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${job.id}.html`;
   const loc = parseAddress(job.address);
   const area = [loc.addressRegion, loc.addressLocality !== loc.addressRegion ? loc.addressLocality : ""].join("");
-  const pageTitle = `${job.title}｜${area ? area + " " : ""}${CONFIG.KEYWORD}｜JOB365`;
-  const metaDesc = `${CONFIG.KEYWORD}｜${area}${job.title}，${job.salaryText || "薪資面議"}。${(job.description || "").replace(/\s+/g, " ").slice(0, 80)}`;
+  // 標題：職稱｜地區（簡稱）｜薪資 - JOB365，例如「堆高機人員｜桃園蘆竹｜月薪36,000起 - JOB365」
+  const shortArea = [
+    loc.addressRegion.replace(/[縣市]$/, ""),
+    loc.addressLocality !== loc.addressRegion ? (loc.addressLocality.length > 2 ? loc.addressLocality.replace(/[區鄉鎮市]$/, "") : loc.addressLocality) : "",
+  ].join("").replace(/臺/g, "台") || job.address;
+  const salaryShort = job.salaryText && !/^面議$/.test(job.salaryText) ? job.salaryText.slice(0, 20) : "";
+  const pageTitle = [job.title, shortArea, salaryShort].filter(Boolean).join("｜") + " - JOB365";
+  const summary = [job.salaryText === "面議" ? "薪資面議" : job.salaryText, [job.shift, job.hours].filter(Boolean).join(" "), job.restDay].filter(Boolean).join("，");
+  const metaDesc = `${area}${job.title}${summary ? "，" + summary : ""}。${(job.description || "").replace(/\s+/g, " ").slice(0, 60)}${job.description ? "。" : ""}JOB365 ${CONFIG.KEYWORD}，免費應徵。`;
   const section = (h, v) => (v ? `<section><h2>${h}</h2><p>${nl2br(v)}</p></section>` : "");
 
   return `<!doctype html>
