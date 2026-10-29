@@ -34,6 +34,9 @@ const CONFIG = {
   // 「立即應徵」按鈕連結（與地圖的 CONTACT_LINK 相同）
   APPLY_URL: "https://lin.ee/oX4esly",
 
+  // GA4 評估 ID（與地圖相同）；留空就不載入 GA
+  GA4_ID: "G-21781Q6CNX",
+
   // 沒有截止日期時，自動設定為首次上架日起幾天後到期
   DEFAULT_VALID_DAYS: 45,
 
@@ -141,6 +144,23 @@ function employmentType(text = "") {
 
 const nl2br = (s) => esc(s).replace(/\r?\n/g, "<br>");
 
+// GA4 載入碼（與地圖 index.html 相同寫法）
+const gaHead = () => CONFIG.GA4_ID ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${CONFIG.GA4_ID}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","${CONFIG.GA4_ID}");</script>` : "";
+
+// 職缺頁事件：view_job（進入頁面）、contact_click（點立即應徵，與地圖同名）、job_page_to_map（點在地圖上查看）
+function gaJobEvents(job) {
+  if (!CONFIG.GA4_ID) return "";
+  const p = JSON.stringify({
+    company: job.industry, job_title: job.title, category: job.category, city: job.address,
+    job_id: job.id, source: "job_page",
+    items: [{ item_id: job.id, item_name: job.title, item_brand: job.industry, item_category: job.category, item_variant: job.address }],
+  }).replace(/</g, "\\u003c");
+  return `<script>(function(){var p=${p};gtag("event","view_job",p);
+document.querySelector(".apply")&&document.querySelector(".apply").addEventListener("click",function(){gtag("event","contact_click",p);});
+document.querySelector(".back")&&document.querySelector(".back").addEventListener("click",function(){gtag("event","job_page_to_map",p);});})();</script>`;
+}
+
 // ---------------- 3. 讀取資料 ----------------
 // 簡易 CSV 解析（支援引號、逗號、換行）
 function parseCsv(text) {
@@ -240,6 +260,7 @@ function pageHtml(job, { closed }) {
 <meta name="description" content="${esc(metaDesc)}">
 <link rel="canonical" href="${url}">
 ${closed ? '<meta name="robots" content="noindex">' : `<script type="application/ld+json">\n${buildJsonLd(job)}\n</script>`}
+${gaHead()}
 <style>
   :root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--muted:#5b6475;--brand:#e8590c;--line:#e3e6eb}
   @media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1d2128;--ink:#e9ecf1;--muted:#a3abb9;--line:#2e333c}}
@@ -281,6 +302,7 @@ ${closed ? '<meta name="robots" content="noindex">' : `<script type="application
   <a class="back" href="${closed ? `${CONFIG.SITE_URL}/` : esc(mapJobUrl(job))}">${closed ? "看更多職缺" : "在地圖上查看"}</a>
   ${closed ? "" : `<a class="apply" href="${esc(job.link || CONFIG.APPLY_URL)}" target="_blank" rel="noopener">立即應徵</a>`}
 </nav>
+${gaJobEvents(job)}
 </body>
 </html>
 `;
@@ -294,6 +316,7 @@ function indexHtml(jobs) {
 <html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>全部職缺｜${esc(CONFIG.ORG.name)}</title>
 <link rel="canonical" href="${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/">
+${gaHead()}
 <style>body{margin:0;background:#f6f7f9;color:#1d2330;font:16px/1.8 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}main{max-width:720px;margin:0 auto;padding:24px 16px}a{color:#c2410c}small{color:#5b6475}
 @media (prefers-color-scheme:dark){body{background:#14171c;color:#e9ecf1}a{color:#fb923c}small{color:#a3abb9}}</style>
 </head><body><main><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
@@ -358,7 +381,7 @@ async function main() {
     job.employmentType = employmentType([job.title, job.category, job.salaryText].join(" "));
 
     const statusText = pick(row, "status").toLowerCase();
-    const closed = CONFIG.CLOSED_WORDS.some((w) => statusText.includes(w)) || (explicitEnd && explicitEnd < today());
+    const closed = CONFIG.CLOSED_WORDS.some((w) => statusText.includes(w)) || Boolean(explicitEnd && explicitEnd < today());
 
     fs.writeFileSync(path.join(outDir, `${job.id}.html`), pageHtml(job, { closed }));
     state[job.id] = { ...st, lastSeen: today(), closed, title: job.title };
