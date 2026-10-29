@@ -1,0 +1,32 @@
+# 每天自動從試算表更新職缺頁與 sitemap.xml
+name: 更新 Google 求職職缺頁
+
+on:
+  schedule:
+    - cron: "17 22 * * *"   # 每天台灣時間 06:17
+    - cron: "17 4 * * *"    # 每天台灣時間 12:17
+  workflow_dispatch:         # 可在 Actions 頁面手動執行
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 產生職缺頁
+        run: node scripts/build-jobs.mjs
+
+      - name: 有變更才提交
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add jobs sitemap.xml
+          git diff --cached --quiet || git commit -m "自動更新職缺頁 $(date -u +%F)"
+          git push
