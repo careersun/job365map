@@ -417,6 +417,7 @@
 
 <footer>
   地圖資料 © OpenStreetMap 貢獻者。<br>
+  <a href="jobs/" style="color:var(--text-faint);text-decoration:underline;">全部職缺列表</a><br>
   Design by <a href="https://instagram.com/sanforestlab" target="_blank" rel="noopener" style="color:var(--text-faint);text-decoration:underline;">Sanforestlab</a>
 </footer>
 
@@ -876,7 +877,7 @@ function showJobModal(job, isSwitch){
   jobModal.style.setProperty('--card-color', CAT_COLOR[job.category] || COLORS.teal);
 
   const render = ()=>{
-    jobModalBody.innerHTML = jobInnerHTML(job) + `<button class="share-job-btn" id="shareJobBtn">🔗 分享這則職缺</button>` + nearbyJobsHTML(job);
+    jobModalBody.innerHTML = jobInnerHTML(job) + `<button class="share-job-btn" id="shareJobBtn">🔗 分享這則職缺</button>` + (job.jobNo ? `<a class="share-job-btn" href="jobs/${encodeURIComponent(job.jobNo)}.html" style="display:block;text-align:center;text-decoration:none;margin-top:8px;">📄 完整職缺頁</a>` : '') + nearbyJobsHTML(job);
     const goLink = jobModalBody.querySelector('.card__go[href]');
     if(goLink){
       goLink.addEventListener('click', ()=>{
@@ -1197,6 +1198,7 @@ function rowToJob(row, map, idx){
   const updatedDate = updatedRaw ? new Date(updatedRaw) : new Date();
   return {
     id: idx+1,
+    jobNo: String(row['職缺編號'] ?? '').trim(), // 對應 jobs/<職缺編號>.html 職缺頁
     _row: idx+2, // 對應試算表實際列號(第1列是標題),寫回點閱數/應徵次數時要用
     company: get('company') || '',
     title: get('title') || '',
