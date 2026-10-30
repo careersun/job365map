@@ -180,9 +180,10 @@ const footerGa = () => CONFIG.GA4_ID ? `<script>document.querySelectorAll(".site
 // 頁首：左邊 Logo，右邊「職缺地圖｜企業徵才」
 const topHeader = () => `<header class="top"><a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a><nav class="toplinks"><a href="${CONFIG.SITE_URL}/">職缺地圖</a><a class="biz" href="${CONFIG.PARENT.recruitUrl}" data-ga="employer_click">企業徵才</a></nav></header>`;
 const topCss = `.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}.top .brand{margin:0}
-  .toplinks{display:flex;align-items:center;gap:12px;font-size:.82rem;white-space:nowrap}.toplinks a{color:var(--muted);text-decoration:none}
-  .toplinks .biz{border:1px solid var(--line);border-radius:999px;padding:3px 11px}
-  @media (max-width:420px){.top .brand small{display:none}.toplinks{gap:8px}}`;
+  .toplinks{display:flex;align-items:center;gap:2px;font-size:.82rem;white-space:nowrap}
+  .toplinks a{display:inline-flex;align-items:center;height:30px;padding:0 12px;border:1px solid transparent;border-radius:999px;line-height:1;color:var(--muted);text-decoration:none}
+  .toplinks .biz{border-color:var(--line)}
+  @media (max-width:420px){.top .brand small{display:none}.toplinks a{padding:0 9px}}`;
 
 // GA4 載入碼（與地圖 index.html 相同寫法）
 const gaHead = () => CONFIG.GA4_ID ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${CONFIG.GA4_ID}"></script>
