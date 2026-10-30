@@ -90,51 +90,63 @@
   "regions": [
     {
       "name": "新竹縣",
-      "n": 35
+      "n": 35,
+      "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-county.html"
     },
     {
       "name": "桃園市",
-      "n": 34
+      "n": 34,
+      "url": "https://careersun.github.io/job365map/jobs/area/taoyuan.html"
     },
     {
       "name": "台北市",
-      "n": 27
+      "n": 27,
+      "url": "https://careersun.github.io/job365map/jobs/area/taipei.html"
     },
     {
       "name": "新竹市",
-      "n": 26
+      "n": 26,
+      "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-city.html"
     },
     {
       "name": "新北市",
-      "n": 16
+      "n": 16,
+      "url": "https://careersun.github.io/job365map/jobs/area/new-taipei.html"
     },
     {
       "name": "台中市",
-      "n": 10
+      "n": 10,
+      "url": "https://careersun.github.io/job365map/jobs/area/taichung.html"
     },
     {
       "name": "苗栗縣",
-      "n": 9
+      "n": 9,
+      "url": "https://careersun.github.io/job365map/jobs/area/miaoli.html"
     },
     {
       "name": "高雄市",
-      "n": 6
+      "n": 6,
+      "url": "https://careersun.github.io/job365map/jobs/area/kaohsiung.html"
     },
     {
       "name": "台南市",
-      "n": 5
+      "n": 5,
+      "url": "https://careersun.github.io/job365map/jobs/area/tainan.html"
     },
     {
       "name": "嘉義市",
-      "n": 2
+      "n": 2,
+      "url": ""
     },
     {
       "name": "彰化縣",
-      "n": 2
+      "n": 2,
+      "url": ""
     },
     {
       "name": "屏東縣",
-      "n": 1
+      "n": 1,
+      "url": ""
     }
   ],
   "categories": [
