@@ -31,6 +31,8 @@
   .brand img{width:36px;height:36px;border-radius:9px}
   .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
   .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+  .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}
+  .site-foot p{margin:4px 0}.site-foot a{color:var(--muted);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -54,6 +56,10 @@
     <section><h2>薪資待遇</h2><p>月薪42,000-46,000</p></section>
     <section><h2>福利</h2><p>年終獎金</p></section>
   </article>
+  <footer class="site-foot">
+  <p>JOB365 是 <a href="http://zjiou.com.tw/" target="_blank" rel="noopener" data-ga="parent_site_click">日玖國際</a> 旗下求職品牌</p>
+  <p>企業主／HR 有徵才需求？<a href="http://zjiou.com.tw/_send/recruit.php" target="_blank" rel="noopener" data-ga="employer_click">了解正職代招</a>・<a href="https://lin.ee/ojpiQai" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></p>
+</footer>
 </main>
 <nav class="cta">
   <a class="back" href="https://careersun.github.io/job365map/">看更多職缺</a>
@@ -62,5 +68,6 @@
 <script>(function(){var p={"company":"連鎖補習班","job_title":"英文老師","category":"教育","city":"新竹市東區","job_id":"J0001","source":"job_page","items":[{"item_id":"J0001","item_name":"英文老師","item_brand":"連鎖補習班","item_category":"教育","item_variant":"新竹市東區"}]};gtag("event","view_job",p);
 document.querySelector(".apply")&&document.querySelector(".apply").addEventListener("click",function(){gtag("event","contact_click",p);});
 document.querySelector(".back")&&document.querySelector(".back").addEventListener("click",function(){gtag("event","job_page_to_map",p);});})();</script>
+<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>
 </body>
 </html>

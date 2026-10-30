@@ -29,7 +29,12 @@
     "@type": "Organization",
     "name": "日玖國際 JOB365",
     "sameAs": "https://careersun.github.io/job365map/",
-    "logo": "https://careersun.github.io/job365map/favicon-192.png"
+    "logo": "https://careersun.github.io/job365map/favicon-192.png",
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "日玖國際",
+      "url": "http://zjiou.com.tw/"
+    }
   },
   "jobLocation": {
     "@type": "Place",
@@ -71,6 +76,8 @@
   .brand img{width:36px;height:36px;border-radius:9px}
   .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
   .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+  .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}
+  .site-foot p{margin:4px 0}.site-foot a{color:var(--muted);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -94,6 +101,10 @@
     <section><h2>薪資待遇</h2><p>時薪205起</p></section>
     <section><h2>福利</h2><p>三節獎金，生日獎金，管理獎金，紅利抽成</p></section>
   </article>
+  <footer class="site-foot">
+  <p>JOB365 是 <a href="http://zjiou.com.tw/" target="_blank" rel="noopener" data-ga="parent_site_click">日玖國際</a> 旗下求職品牌</p>
+  <p>企業主／HR 有徵才需求？<a href="http://zjiou.com.tw/_send/recruit.php" target="_blank" rel="noopener" data-ga="employer_click">了解正職代招</a>・<a href="https://lin.ee/ojpiQai" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></p>
+</footer>
 </main>
 <nav class="cta">
   <a class="back" href="https://careersun.github.io/job365map/?job=%E9%A4%90%E9%A3%B2%E6%A5%AD_%E2%9C%A6%E9%A4%90%E9%A3%B2%E9%8A%B7%E5%94%AE%E5%93%A1">在地圖上查看</a>
@@ -102,5 +113,6 @@
 <script>(function(){var p={"company":"餐飲業","job_title":"✦餐飲銷售員","category":"服務人員","city":"新北市樹林區","job_id":"J0130","source":"job_page","items":[{"item_id":"J0130","item_name":"✦餐飲銷售員","item_brand":"餐飲業","item_category":"服務人員","item_variant":"新北市樹林區"}]};gtag("event","view_job",p);
 document.querySelector(".apply")&&document.querySelector(".apply").addEventListener("click",function(){gtag("event","contact_click",p);});
 document.querySelector(".back")&&document.querySelector(".back").addEventListener("click",function(){gtag("event","job_page_to_map",p);});})();</script>
+<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>
 </body>
 </html>

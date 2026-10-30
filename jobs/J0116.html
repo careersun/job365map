@@ -29,7 +29,12 @@
     "@type": "Organization",
     "name": "日玖國際 JOB365",
     "sameAs": "https://careersun.github.io/job365map/",
-    "logo": "https://careersun.github.io/job365map/favicon-192.png"
+    "logo": "https://careersun.github.io/job365map/favicon-192.png",
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "日玖國際",
+      "url": "http://zjiou.com.tw/"
+    }
   },
   "jobLocation": {
     "@type": "Place",
@@ -71,6 +76,8 @@
   .brand img{width:36px;height:36px;border-radius:9px}
   .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
   .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+  .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}
+  .site-foot p{margin:4px 0}.site-foot a{color:var(--muted);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -94,6 +101,10 @@
     <section><h2>薪資待遇</h2><p>月薪35,100起</p></section>
     <section><h2>福利</h2><p>分紅獎金，年終獎金，三節獎金</p></section>
   </article>
+  <footer class="site-foot">
+  <p>JOB365 是 <a href="http://zjiou.com.tw/" target="_blank" rel="noopener" data-ga="parent_site_click">日玖國際</a> 旗下求職品牌</p>
+  <p>企業主／HR 有徵才需求？<a href="http://zjiou.com.tw/_send/recruit.php" target="_blank" rel="noopener" data-ga="employer_click">了解正職代招</a>・<a href="https://lin.ee/ojpiQai" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></p>
+</footer>
 </main>
 <nav class="cta">
   <a class="back" href="https://careersun.github.io/job365map/?job=%E8%BB%9F%E9%AB%94%E8%88%87%E7%B6%B2%E8%B7%AF%E7%9B%B8%E9%97%9C_%E9%9B%99%E5%8C%97%E5%A4%A7%E5%A4%9C%E7%8F%AD%E9%9B%BB%E5%8B%95%E6%A9%9F%E8%BB%8A%E7%B6%AD%E9%81%8B%E5%93%A1(%E5%A4%96%E5%8B%99%E6%80%A7%E8%B3%AA)">在地圖上查看</a>
@@ -102,5 +113,6 @@
 <script>(function(){var p={"company":"軟體與網路相關","job_title":"雙北 大夜班 電動機車維運員(外務性質)","category":"運輸人員","city":"台北市新北市","job_id":"J0116","source":"job_page","items":[{"item_id":"J0116","item_name":"雙北 大夜班 電動機車維運員(外務性質)","item_brand":"軟體與網路相關","item_category":"運輸人員","item_variant":"台北市新北市"}]};gtag("event","view_job",p);
 document.querySelector(".apply")&&document.querySelector(".apply").addEventListener("click",function(){gtag("event","contact_click",p);});
 document.querySelector(".back")&&document.querySelector(".back").addEventListener("click",function(){gtag("event","job_page_to_map",p);});})();</script>
+<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>
 </body>
 </html>
