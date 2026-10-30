@@ -461,7 +461,7 @@ ${gaHead()}
 
   <section class="hire">
     <h2>企業主：在${esc(region)}找人？</h2>
-    <p>JOB365 × 中基層獵才提供${esc(region)}中基層人才正職代招：啟動人才庫主動獵才、顧問一對一面談後推薦，人選報到才收費，單月上限 15,000 元。${esc(CONFIG.PARENT.name)}旗下團隊。</p>
+    <p>JOB365 × 中基層獵才提供${esc(region)}中基層人才正職代招：啟動人才庫主動獵才、顧問一對一面談後推薦，人選報到才收費，只收第一個月、最高 15,000 元。${esc(CONFIG.PARENT.name)}旗下團隊。</p>
     <div class="btns"><a class="b1" href="${CONFIG.PARENT.recruitUrl}" data-ga="area_hire_click">了解正職代招</a><a class="b2" href="https://line.me/R/ti/p/@642ahllq" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></div>
   </section>
 
