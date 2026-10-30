@@ -78,7 +78,7 @@ const CONFIG = {
 // ---------------- 2. 工具函式 ----------------
 const ROOT = process.cwd();
 const STATE_FILE = path.join(ROOT, CONFIG.OUT_DIR, "jobs-state.json");
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10); // 台灣時間
 
 const esc = (s = "") =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
