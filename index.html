@@ -1270,6 +1270,9 @@ async function loadFromSheet(url){
     renderStats();
     update();
     openJobFromUrlParam();
+    // 從首頁搜尋框帶過來的關鍵字（?q=）
+    const q0 = new URLSearchParams(location.search).get('q');
+    if(q0){ document.getElementById('searchInput').value = q0; state.query = q0; update(); }
   }catch(err){
     console.error('職缺地圖:讀取 Google 試算表失敗 —', err.message);
     console.debug(err);
