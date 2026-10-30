@@ -177,6 +177,13 @@ const siteFooter = () => `<footer class="site-foot">
 </footer>`;
 const footerGa = () => CONFIG.GA4_ID ? `<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>` : "";
 
+// 頁首：左邊 Logo，右邊「職缺地圖｜企業徵才」
+const topHeader = () => `<header class="top"><a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a><nav class="toplinks"><a href="${CONFIG.SITE_URL}/">職缺地圖</a><a class="biz" href="${CONFIG.PARENT.recruitUrl}" data-ga="employer_click">企業徵才</a></nav></header>`;
+const topCss = `.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}.top .brand{margin:0}
+  .toplinks{display:flex;align-items:center;gap:12px;font-size:.82rem;white-space:nowrap}.toplinks a{color:var(--muted);text-decoration:none}
+  .toplinks .biz{border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+  @media (max-width:420px){.top .brand small{display:none}.toplinks{gap:8px}}`;
+
 // GA4 載入碼（與地圖 index.html 相同寫法）
 const gaHead = () => CONFIG.GA4_ID ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${CONFIG.GA4_ID}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","${CONFIG.GA4_ID}");</script>` : "";
@@ -325,13 +332,14 @@ ${gaHead()}
   .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
   .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
   .crumbs{font-size:.82rem;color:var(--muted);margin:0 0 12px}.crumbs a{color:var(--muted)}
+  ${topCss}
   .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}
   .site-foot p{margin:4px 0}.site-foot a{color:var(--muted);text-decoration:underline}
 </style>
 </head>
 <body>
 <main>
-  <a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a>
+  ${topHeader()}
   <nav class="crumbs"><a href="${CONFIG.SITE_URL}/">職缺地圖</a> › ${REGION_SLUGS[regionOf(job)] ? `<a href="area/${REGION_SLUGS[regionOf(job)]}.html">${esc(regionOf(job))}職缺</a> › ` : ""}${esc(job.title)}</nav>
   <article class="card">
     ${closed ? '<div class="closed">此職缺已停止招募，歡迎回到職缺地圖查看其他職缺。</div>' : ""}
@@ -420,6 +428,7 @@ ${gaHead()}
   .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);margin:0 0 14px}
   .brand img{width:36px;height:36px;border-radius:9px}.brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}.brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
   .crumbs{font-size:.82rem;color:var(--muted);margin:0 0 8px}.crumbs a{color:var(--muted)}
+  ${topCss}
   h1{font-size:1.7rem;line-height:1.35;margin:0 0 8px}
   .lead{color:var(--muted);margin:0 0 18px}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
@@ -441,7 +450,7 @@ ${gaHead()}
 </head>
 <body>
 <main>
-  <a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a>
+  ${topHeader()}
   <nav class="crumbs"><a href="${CONFIG.SITE_URL}/">職缺地圖</a> › <a href="../">全部職缺</a> › ${esc(region)}職缺</nav>
   <h1>${esc(region)}正職職缺（${n}）</h1>
   <p class="lead">${esc(desc.split("。")[0])}。資料每日更新。</p>
@@ -477,7 +486,7 @@ function indexHtml(jobs, areaLinks = []) {
 ${gaHead()}
 <style>body{margin:0;background:#f6f7f9;color:#1d2330;font:16px/1.8 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}main{max-width:720px;margin:0 auto;padding:24px 16px}a{color:#c2410c}small{color:#5b6475}
 @media (prefers-color-scheme:dark){body{background:#14171c;color:#e9ecf1}a{color:#fb923c}small{color:#a3abb9}}</style>
-</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p>${areaLinks.length ? `<p>依地區瀏覽：${areaLinks.map((a) => `<a href="area/${a.slug}.html">${esc(a.name)}（${a.n}）</a>`).join("・")}</p>` : ""}<ul>
+</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a>　｜　<a href="${CONFIG.PARENT.recruitUrl}" data-ga="employer_click">企業徵才 →</a></p>${areaLinks.length ? `<p>依地區瀏覽：${areaLinks.map((a) => `<a href="area/${a.slug}.html">${esc(a.name)}（${a.n}）</a>`).join("・")}</p>` : ""}<ul>
 ${items}
 </ul>
 <div style="color:#5b6475;font-size:.85rem;margin-top:32px">${siteFooter().replace('class="site-foot"', 'class="site-foot" style="text-align:left"')}</div>
