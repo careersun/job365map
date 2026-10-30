@@ -42,7 +42,7 @@ const CONFIG = {
   APPLY_URL: "https://lin.ee/oX4esly",
 
   // 每頁都會出現的主要關鍵字（標題、描述、頁首）
-  KEYWORD: "中基層求職職缺",
+  KEYWORD: "中基層人才所(求職來就補)",
 
   // GA4 評估 ID（與地圖相同）；留空就不載入 GA
   GA4_ID: "G-21781Q6CNX",
@@ -352,14 +352,14 @@ function indexHtml(jobs) {
     .join("\n");
   return `<!doctype html>
 <html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>全部${CONFIG.KEYWORD}｜JOB365</title>
-<meta name="description" content="JOB365 ${CONFIG.KEYWORD}總覽，共 ${jobs.length} 筆招募中職缺，可依地區、薪資、班別快速找到適合的工作。">
+<title>全部職缺｜JOB365 ${CONFIG.KEYWORD}</title>
+<meta name="description" content="JOB365 ${CONFIG.KEYWORD}職缺總覽，共 ${jobs.length} 筆招募中職缺，可依地區、薪資、班別快速找到適合的工作。">
 <link rel="icon" href="${CONFIG.SITE_URL}/favicon.png">
 <link rel="canonical" href="${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/">
 ${gaHead()}
 <style>body{margin:0;background:#f6f7f9;color:#1d2330;font:16px/1.8 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}main{max-width:720px;margin:0 auto;padding:24px 16px}a{color:#c2410c}small{color:#5b6475}
 @media (prefers-color-scheme:dark){body{background:#14171c;color:#e9ecf1}a{color:#fb923c}small{color:#a3abb9}}</style>
-</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部${CONFIG.KEYWORD}（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
+</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
 ${items}
 </ul>
 <div style="color:#5b6475;font-size:.85rem;margin-top:32px">${siteFooter().replace('class="site-foot"', 'class="site-foot" style="text-align:left"')}</div>
