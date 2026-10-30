@@ -129,6 +129,22 @@ function parseAddress(addr) {
   };
 }
 
+// 縣市 → 地區頁網址代稱
+const REGION_SLUGS = {
+  "台北市": "taipei", "新北市": "new-taipei", "基隆市": "keelung", "桃園市": "taoyuan",
+  "新竹市": "hsinchu-city", "新竹縣": "hsinchu-county", "苗栗縣": "miaoli", "台中市": "taichung",
+  "彰化縣": "changhua", "南投縣": "nantou", "雲林縣": "yunlin", "嘉義市": "chiayi-city",
+  "嘉義縣": "chiayi-county", "台南市": "tainan", "高雄市": "kaohsiung", "屏東縣": "pingtung",
+  "宜蘭縣": "yilan", "花蓮縣": "hualien", "台東縣": "taitung", "澎湖縣": "penghu",
+  "金門縣": "kinmen", "連江縣": "lienchiang",
+};
+const AREA_MIN_JOBS = 3; // 職缺數達到這個數量才提交給 Google（避免內容太少）
+const regionOf = (job) => parseAddress(job.address).addressRegion.replace(/臺/g, "台");
+const localityOf = (job) => {
+  const a = parseAddress(job.address);
+  return a.addressLocality !== a.addressRegion ? a.addressLocality.replace(/臺/g, "台") : "";
+};
+
 // 「月薪 32,000~38,000」「時薪200」「3.2萬起」「面議」→ baseSalary
 function parseSalary(text) {
   if (!text || /面議/.test(text) && !/\d/.test(text)) return null;
@@ -308,6 +324,7 @@ ${gaHead()}
   .brand img{width:36px;height:36px;border-radius:9px}
   .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
   .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+  .crumbs{font-size:.82rem;color:var(--muted);margin:0 0 12px}.crumbs a{color:var(--muted)}
   .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}
   .site-foot p{margin:4px 0}.site-foot a{color:var(--muted);text-decoration:underline}
 </style>
@@ -315,6 +332,7 @@ ${gaHead()}
 <body>
 <main>
   <a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a>
+  <nav class="crumbs"><a href="${CONFIG.SITE_URL}/">職缺地圖</a> › ${REGION_SLUGS[regionOf(job)] ? `<a href="area/${REGION_SLUGS[regionOf(job)]}.html">${esc(regionOf(job))}職缺</a> › ` : ""}${esc(job.title)}</nav>
   <article class="card">
     ${closed ? '<div class="closed">此職缺已停止招募，歡迎回到職缺地圖查看其他職缺。</div>' : ""}
     <h1>${esc(job.title)}</h1>
@@ -346,7 +364,107 @@ ${footerGa()}
 `;
 }
 
-function indexHtml(jobs) {
+// 地區頁：上半給求職者（職缺列表），下方給企業主（正職代招）
+function areaHtml(region, slug, jobs, areaLinks) {
+  const url = `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${slug}.html`;
+  const n = jobs.length;
+  // 「竹北」「竹北市」視為同一區，顯示名稱用比較完整的寫法
+  const groups = {};
+  for (const j of jobs) {
+    const name = localityOf(j) || "其他地區";
+    const key = name.length > 2 ? name.replace(/[市鄉鎮區]$/, "") : name;
+    const g = (groups[key] ||= { name, list: [] });
+    if (name.length > g.name.length) g.name = name;
+    g.list.push(j);
+  }
+  const locs = Object.values(groups).map((g) => [g.name, g.list]).sort((a, b) => b[1].length - a[1].length);
+  const inds = Object.entries(jobs.reduce((m, j) => { if (j.industry) m[j.industry] = (m[j.industry] || 0) + 1; return m; }, {}))
+    .sort((a, b) => b[1] - a[1]).map(([k]) => k);
+  const locNames = locs.map(([k]) => k).filter((k) => k !== "其他地區");
+  const title = `${region}正職職缺 ${n} 筆｜${region}正職代招 - JOB365`;
+  const desc = n
+    ? `${region}目前有 ${n} 筆招募中正職職缺${locNames.length ? `，分布在${locNames.slice(0, 4).join("、")}等地` : ""}${inds.length ? `，產業以${inds.slice(0, 3).join("、")}為主` : ""}。企業主在${region}找人，也可透過 JOB365 × 中基層獵才正職代招，人選報到才收費。`
+    : `${region}目前暫無招募中職缺。企業主在${region}找人，可透過 JOB365 × 中基層獵才正職代招，人選報到才收費。`;
+  const jobLi = (j) => `<li><a href="../${j.id}.html">${esc(j.title)}</a><small>${esc([j.salaryText, j.shift, j.industry].filter(Boolean).join("｜"))}</small></li>`;
+  const ld = JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: "職缺地圖", item: `${CONFIG.SITE_URL}/` },
+        { "@type": "ListItem", position: 2, name: "全部職缺", item: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/` },
+        { "@type": "ListItem", position: 3, name: `${region}職缺`, item: url } ] },
+      { "@type": "ItemList", name: `${region}正職職缺`, numberOfItems: n,
+        itemListElement: jobs.slice(0, 100).map((j, i) => ({ "@type": "ListItem", position: i + 1, url: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${j.id}.html` })) },
+    ],
+  }).replace(/</g, "\\u003c");
+  return `<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${url}">
+<link rel="icon" href="${CONFIG.SITE_URL}/favicon.png">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:image" content="${CONFIG.SITE_URL}/og-image.png">
+${n < AREA_MIN_JOBS ? '<meta name="robots" content="noindex">' : ""}
+<script type="application/ld+json">${ld}</script>
+${gaHead()}
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--muted:#5b6475;--brand:#e8590c;--line:#e3e6eb;--soft:#fff1e9}
+  @media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1d2128;--ink:#e9ecf1;--muted:#a3abb9;--line:#2e333c;--soft:#2a211b}}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 -apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+  main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);margin:0 0 14px}
+  .brand img{width:36px;height:36px;border-radius:9px}.brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}.brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+  .crumbs{font-size:.82rem;color:var(--muted);margin:0 0 8px}.crumbs a{color:var(--muted)}
+  h1{font-size:1.7rem;line-height:1.35;margin:0 0 8px}
+  .lead{color:var(--muted);margin:0 0 18px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+  .chips a,.chips span{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:.88rem;text-decoration:none;color:var(--ink)}
+  .chips b{color:var(--brand);margin-left:4px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:0 0 14px}
+  h2{font-size:1.1rem;margin:0 0 8px}
+  ul.jobs{list-style:none;margin:0;padding:0}
+  ul.jobs li{padding:9px 0;border-top:1px dashed var(--line)}ul.jobs li:first-child{border-top:0}
+  ul.jobs a{color:var(--ink);font-weight:600}ul.jobs small{display:block;color:var(--muted);font-size:.85rem}
+  .hire{background:var(--soft);border:1px solid #ffd9c4;border-radius:16px;padding:20px;margin:26px 0 14px}
+  .hire h2{font-size:1.2rem}.hire p{margin:0 0 12px;color:var(--muted)}
+  .btns{display:flex;flex-wrap:wrap;gap:10px}
+  .btns a{padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:700}
+  .b1{background:var(--brand);color:#fff}.b2{background:#06c755;color:#fff}
+  .others a{color:var(--muted)}
+  .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}.site-foot p{margin:4px 0}.site-foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <a class="brand" href="${CONFIG.SITE_URL}/"><img src="${CONFIG.SITE_URL}/favicon-192.png" alt="JOB365 Logo" width="36" height="36"><span><b>JOB365 CONSULTANT</b><small>${CONFIG.KEYWORD}</small></span></a>
+  <nav class="crumbs"><a href="${CONFIG.SITE_URL}/">職缺地圖</a> › <a href="../">全部職缺</a> › ${esc(region)}職缺</nav>
+  <h1>${esc(region)}正職職缺（${n}）</h1>
+  <p class="lead">${esc(desc.split("。")[0])}。資料每日更新。</p>
+  ${locs.length > 1 ? `<div class="chips">${locs.map(([k, v], i) => `<a href="#loc-${i}">${esc(k)}<b>${v.length}</b></a>`).join("")}</div>` : ""}
+  ${locs.map(([k, v], i) => `<section class="card" id="loc-${i}"><h2>${esc(k)}職缺（${v.length}）</h2><ul class="jobs">${v.map(jobLi).join("")}</ul></section>`).join("\n  ")}
+  ${n ? "" : `<section class="card"><p>目前暫無招募中職缺，<a href="${CONFIG.SITE_URL}/">到職缺地圖看其他地區 →</a></p></section>`}
+
+  <section class="hire">
+    <h2>企業主：在${esc(region)}找人？</h2>
+    <p>JOB365 × 中基層獵才提供${esc(region)}中基層人才正職代招：啟動人才庫主動獵才、顧問一對一面談後推薦，人選報到才收費，單月上限 15,000 元。${esc(CONFIG.PARENT.name)}旗下團隊。</p>
+    <div class="btns"><a class="b1" href="${CONFIG.PARENT.recruitUrl}" data-ga="area_hire_click">了解正職代招</a><a class="b2" href="https://line.me/R/ti/p/@642ahllq" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></div>
+  </section>
+
+  ${areaLinks.length > 1 ? `<p class="others">其他地區：${areaLinks.filter((a) => a.slug !== slug).map((a) => `<a href="${a.slug}.html">${esc(a.name)}職缺</a>`).join("・")}</p>` : ""}
+  ${siteFooter()}
+</main>
+${CONFIG.GA4_ID ? `<script>document.querySelectorAll("a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:"area",region:${JSON.stringify(region)}});});});</script>` : ""}
+</body>
+</html>
+`;
+}
+
+function indexHtml(jobs, areaLinks = []) {
   const items = jobs
     .map((j) => `<li><a href="${j.id}.html">${esc(j.title)}</a>　<small>${esc(parseAddress(j.address).addressRegion)}　${esc(j.salaryText)}</small></li>`)
     .join("\n");
@@ -359,7 +477,7 @@ function indexHtml(jobs) {
 ${gaHead()}
 <style>body{margin:0;background:#f6f7f9;color:#1d2330;font:16px/1.8 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}main{max-width:720px;margin:0 auto;padding:24px 16px}a{color:#c2410c}small{color:#5b6475}
 @media (prefers-color-scheme:dark){body{background:#14171c;color:#e9ecf1}a{color:#fb923c}small{color:#a3abb9}}</style>
-</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
+</head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部職缺（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p>${areaLinks.length ? `<p>依地區瀏覽：${areaLinks.map((a) => `<a href="area/${a.slug}.html">${esc(a.name)}（${a.n}）</a>`).join("・")}</p>` : ""}<ul>
 ${items}
 </ul>
 <div style="color:#5b6475;font-size:.85rem;margin-top:32px">${siteFooter().replace('class="site-foot"', 'class="site-foot" style="text-align:left"')}</div>
@@ -367,10 +485,11 @@ ${items}
 `;
 }
 
-function sitemapXml(jobs) {
+function sitemapXml(jobs, areaLinks = []) {
   const urls = [
     { loc: `${CONFIG.SITE_URL}/`, lastmod: today() },
     { loc: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/`, lastmod: today() },
+    ...areaLinks.map((a) => ({ loc: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${a.slug}.html`, lastmod: today() })),
     ...jobs.map((j) => ({ loc: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${j.id}.html`, lastmod: j.datePosted })),
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -444,7 +563,22 @@ async function main() {
     state[id] = { ...st, closed: true };
   }
 
-  fs.writeFileSync(path.join(outDir, "index.html"), indexHtml(open));
+  // 地區頁
+  const areaDir = path.join(outDir, "area");
+  fs.mkdirSync(areaDir, { recursive: true });
+  const byRegion = {};
+  for (const j of open) { const r = regionOf(j); if (REGION_SLUGS[r]) (byRegion[r] ||= []).push(j); }
+  const areaLinks = Object.entries(byRegion).filter(([, v]) => v.length >= AREA_MIN_JOBS)
+    .sort((a, b) => b[1].length - a[1].length).map(([name, v]) => ({ name, slug: REGION_SLUGS[name], n: v.length }));
+  const slugToRegion = Object.fromEntries(Object.entries(REGION_SLUGS).map(([k, v]) => [v, k]));
+  const existing = fs.readdirSync(areaDir).filter((f) => f.endsWith(".html")).map((f) => f.slice(0, -5));
+  for (const slug of new Set([...Object.keys(byRegion).map((r) => REGION_SLUGS[r]), ...existing])) {
+    const region = slugToRegion[slug];
+    if (!region) continue;
+    fs.writeFileSync(path.join(areaDir, `${slug}.html`), areaHtml(region, slug, byRegion[region] || [], areaLinks));
+  }
+
+  fs.writeFileSync(path.join(outDir, "index.html"), indexHtml(open, areaLinks));
 
   // 給代招頁 /hire/ 顯示的統計數字（每次更新自動重算）
   const tally = (list) => Object.entries(list.reduce((m, k) => { if (k) m[k] = (m[k] || 0) + 1; return m; }, {}))
@@ -453,10 +587,10 @@ async function main() {
     updated: today(),
     open: open.length,
     industries: tally(open.map((j) => j.industry)),
-    regions: tally(open.map((j) => parseAddress(j.address).addressRegion.replace(/臺/g, "台"))),
+    regions: tally(open.map(regionOf)).map((r) => ({ ...r, url: areaLinks.some((a) => a.name === r.name) ? `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${REGION_SLUGS[r.name]}.html` : "" })),
     categories: tally(open.map((j) => j.category)),
   }, null, 2));
-  fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemapXml(open));
+  fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemapXml(open, areaLinks));
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
   warnings.forEach((w) => console.warn("⚠ " + w));
