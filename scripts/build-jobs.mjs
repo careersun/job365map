@@ -31,6 +31,13 @@ const CONFIG = {
     url: "https://careersun.github.io/job365map/",
     logo: "https://careersun.github.io/job365map/favicon-192.png", // 正方形、至少 112x112
   },
+  // 母公司與企業徵才（代招）連結
+  PARENT: {
+    name: "日玖國際",
+    url: "http://zjiou.com.tw/",
+    recruitUrl: "http://zjiou.com.tw/_send/recruit.php", // 正職代招介紹頁
+    recruitLine: "https://lin.ee/ojpiQai",               // 正職代招諮詢 LINE
+  },
   // 「立即應徵」按鈕連結（與地圖的 CONTACT_LINK 相同）
   APPLY_URL: "https://lin.ee/oX4esly",
 
@@ -147,6 +154,13 @@ function employmentType(text = "") {
 
 const nl2br = (s) => esc(s).replace(/\r?\n/g, "<br>");
 
+// 頁尾：母公司 + 企業徵才入口（求職者頁面上低調呈現）
+const siteFooter = () => `<footer class="site-foot">
+  <p>JOB365 是 <a href="${CONFIG.PARENT.url}" target="_blank" rel="noopener" data-ga="parent_site_click">${CONFIG.PARENT.name}</a> 旗下求職品牌</p>
+  <p>企業主／HR 有徵才需求？<a href="${CONFIG.PARENT.recruitUrl}" target="_blank" rel="noopener" data-ga="employer_click">了解正職代招</a>・<a href="${CONFIG.PARENT.recruitLine}" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></p>
+</footer>`;
+const footerGa = () => CONFIG.GA4_ID ? `<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>` : "";
+
 // GA4 載入碼（與地圖 index.html 相同寫法）
 const gaHead = () => CONFIG.GA4_ID ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${CONFIG.GA4_ID}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","${CONFIG.GA4_ID}");</script>` : "";
@@ -236,6 +250,7 @@ function buildJsonLd(job) {
       name: job.company || CONFIG.ORG.name,
       sameAs: CONFIG.ORG.url,
       logo: CONFIG.ORG.logo,
+      parentOrganization: { "@type": "Organization", name: CONFIG.PARENT.name, url: CONFIG.PARENT.url },
     },
     jobLocation: { "@type": "Place", address: parseAddress(job.address) },
     directApply: false,
@@ -293,6 +308,8 @@ ${gaHead()}
   .brand img{width:36px;height:36px;border-radius:9px}
   .brand b{display:block;font-size:.95rem;letter-spacing:.08em;line-height:1.2}
   .brand small{display:block;color:var(--muted);font-size:.8rem;line-height:1.3}
+  .site-foot{margin:28px 0 0;text-align:center;font-size:.82rem;color:var(--muted)}
+  .site-foot p{margin:4px 0}.site-foot a{color:var(--muted);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -316,12 +333,14 @@ ${gaHead()}
     ${section("薪資待遇", job.salaryText)}
     ${section("福利", job.benefits)}
   </article>
+  ${siteFooter()}
 </main>
 <nav class="cta">
   <a class="back" href="${closed ? `${CONFIG.SITE_URL}/` : esc(mapJobUrl(job))}">${closed ? "看更多職缺" : "在地圖上查看"}</a>
   ${closed ? "" : `<a class="apply" href="${esc(job.link || CONFIG.APPLY_URL)}" target="_blank" rel="noopener">立即應徵</a>`}
 </nav>
 ${gaJobEvents(job)}
+${footerGa()}
 </body>
 </html>
 `;
@@ -342,7 +361,9 @@ ${gaHead()}
 @media (prefers-color-scheme:dark){body{background:#14171c;color:#e9ecf1}a{color:#fb923c}small{color:#a3abb9}}</style>
 </head><body><main><a href="../" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><img src="../favicon-192.png" alt="JOB365 Logo" width="36" height="36" style="border-radius:9px"><b style="letter-spacing:.08em">JOB365 CONSULTANT</b></a><h1>全部${CONFIG.KEYWORD}（${jobs.length}）</h1><p><a href="../">← 回職缺地圖</a></p><ul>
 ${items}
-</ul></main></body></html>
+</ul>
+<div style="color:#5b6475;font-size:.85rem;margin-top:32px">${siteFooter().replace('class="site-foot"', 'class="site-foot" style="text-align:left"')}</div>
+</main>${footerGa()}</body></html>
 `;
 }
 
