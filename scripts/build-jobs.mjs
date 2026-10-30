@@ -42,7 +42,7 @@ const CONFIG = {
   APPLY_URL: "https://lin.ee/oX4esly",
 
   // 每頁都會出現的主要關鍵字（標題、描述、頁首）
-  KEYWORD: "中基層人才所(求職來就補)",
+  KEYWORD: "中基層人才所(工作・人才來就補)",
 
   // GA4 評估 ID（與地圖相同）；留空就不載入 GA
   GA4_ID: "G-21781Q6CNX",
