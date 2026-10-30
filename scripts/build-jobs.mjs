@@ -520,6 +520,7 @@ async function main() {
   if (!hasStatusCol) console.warn("⚠ 找不到「狀態」欄位：所有職缺都會被視為招募中。建議在試算表新增「狀態」欄。");
 
   const open = [];
+  const posted = []; // 每筆職缺（含已停招）的刊登日期，用來算「近 30 天新增」
   const seen = new Set();
   const warnings = [];
 
@@ -546,6 +547,7 @@ async function main() {
 
     const st = state[job.id] || { firstSeen: today() };
     job.datePosted = toDate(pick(row, "posted")) || st.firstSeen;
+    posted.push(job.datePosted);
     // 有填截止日期就用；沒填的話，只要狀態是招募中，每次執行都往後延，避免被判定過期
     const explicitEnd = toDate(pick(row, "validThrough"));
     job.validThrough = explicitEnd || addDays(today(), CONFIG.DEFAULT_VALID_DAYS);
@@ -596,6 +598,10 @@ async function main() {
   fs.writeFileSync(path.join(outDir, "stats.json"), JSON.stringify({
     updated: today(),
     open: open.length,
+    new30: posted.filter((d) => d && d >= addDays(today(), -30)).length,
+    // 每月「累計」合作職缺數（含已停招），呈現成長趨勢
+    monthly: (() => { let sum = 0; return Object.entries(posted.reduce((m, d) => { if (d) m[d.slice(0, 7)] = (m[d.slice(0, 7)] || 0) + 1; return m; }, {}))
+      .sort((a, b) => a[0].localeCompare(b[0])).map(([month, n]) => ({ month, n: (sum += n) })).slice(-6); })(),
     industries: tally(open.map((j) => j.industry)),
     regions: tally(open.map(regionOf)).map((r) => ({ ...r, url: areaLinks.some((a) => a.name === r.name) ? `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${REGION_SLUGS[r.name]}.html` : "" })),
     categories: tally(open.map((j) => j.category)),
