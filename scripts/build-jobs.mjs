@@ -156,7 +156,7 @@ const nl2br = (s) => esc(s).replace(/\r?\n/g, "<br>");
 
 // 頁尾：母公司 + 企業徵才入口（求職者頁面上低調呈現）
 const siteFooter = () => `<footer class="site-foot">
-  <p>JOB365 是 <a href="${CONFIG.PARENT.url}" target="_blank" rel="noopener" data-ga="parent_site_click">${CONFIG.PARENT.name}</a> 旗下求職品牌</p>
+  <p>JOB365 為 <a href="${CONFIG.PARENT.url}" target="_blank" rel="noopener" data-ga="parent_site_click">${CONFIG.PARENT.name}</a> 旗下團隊</p>
   <p>企業主／HR 有徵才需求？<a href="${CONFIG.PARENT.recruitUrl}" target="_blank" rel="noopener" data-ga="employer_click">了解正職代招</a>・<a href="${CONFIG.PARENT.recruitLine}" target="_blank" rel="noopener" data-ga="employer_line_click">LINE 諮詢</a></p>
 </footer>`;
 const footerGa = () => CONFIG.GA4_ID ? `<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>` : "";
