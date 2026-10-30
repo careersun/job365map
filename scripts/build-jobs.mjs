@@ -599,6 +599,9 @@ async function main() {
     industries: tally(open.map((j) => j.industry)),
     regions: tally(open.map(regionOf)).map((r) => ({ ...r, url: areaLinks.some((a) => a.name === r.name) ? `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${REGION_SLUGS[r.name]}.html` : "" })),
     categories: tally(open.map((j) => j.category)),
+    // 首頁「最新職缺」卡片用
+    latest: [...open].sort((a, b) => (b.datePosted || "").localeCompare(a.datePosted || "") || b.id.localeCompare(a.id)).slice(0, 12)
+      .map((j) => ({ id: j.id, title: j.title, region: regionOf(j), area: localityOf(j), salary: j.salaryText, shift: j.shift, url: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${j.id}.html` })),
   }, null, 2));
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemapXml(open, areaLinks));
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
