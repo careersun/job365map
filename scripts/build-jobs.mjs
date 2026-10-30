@@ -35,7 +35,7 @@ const CONFIG = {
   PARENT: {
     name: "日玖國際",
     url: "http://zjiou.com.tw/",
-    recruitUrl: "http://zjiou.com.tw/_send/recruit.php", // 正職代招介紹頁
+    recruitUrl: "https://careersun.github.io/hire/",     // 代招介紹頁（JOB365 × 中基層獵才）
     recruitLine: "https://lin.ee/ojpiQai",               // 正職代招諮詢 LINE
   },
   // 「立即應徵」按鈕連結（與地圖的 CONTACT_LINK 相同）
@@ -445,6 +445,17 @@ async function main() {
   }
 
   fs.writeFileSync(path.join(outDir, "index.html"), indexHtml(open));
+
+  // 給代招頁 /hire/ 顯示的統計數字（每次更新自動重算）
+  const tally = (list) => Object.entries(list.reduce((m, k) => { if (k) m[k] = (m[k] || 0) + 1; return m; }, {}))
+    .sort((a, b) => b[1] - a[1]).map(([name, n]) => ({ name, n }));
+  fs.writeFileSync(path.join(outDir, "stats.json"), JSON.stringify({
+    updated: today(),
+    open: open.length,
+    industries: tally(open.map((j) => j.industry)),
+    regions: tally(open.map((j) => parseAddress(j.address).addressRegion.replace(/臺/g, "台"))),
+    categories: tally(open.map((j) => j.category)),
+  }, null, 2));
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemapXml(open));
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
