@@ -65,6 +65,7 @@
   .nav__links{display:flex;gap:22px;font-size:13px;color:var(--text-muted);}
   .nav__links a{text-decoration:none;transition:color .15s;}
   .nav__links a:hover{color:var(--gold);}
+  .nav__links .nav__biz{border:1px solid var(--border);border-radius:999px;padding:2px 12px;}
 
   .hero{position:relative;padding:56px 32px 32px;overflow:hidden;border-bottom:1px solid var(--border);}
   .hero__sky{position:absolute;inset:0;pointer-events:none;}
@@ -262,7 +263,8 @@
   .filter-sheet-apply{display:none;}
 
   @media (max-width:720px){
-    .nav__links{display:none;}
+    .nav__links{gap:12px;font-size:12px;}
+    .nav__hide-sm{display:none;}
     .hero{padding:44px 16px 28px;}
     .hero p{font-size:13px;}
     .search{padding:5px 5px 5px 14px;}
@@ -336,8 +338,9 @@
     JOB365·職缺地圖
   </div>
   <div class="nav__links">
-    <a href="#">關於資料來源</a>
-    <a href="#">回饋</a>
+    <a href="https://careersun.github.io/">首頁</a>
+    <a href="jobs/" class="nav__hide-sm">全部職缺</a>
+    <a href="https://careersun.github.io/hire/" class="nav__biz">企業徵才</a>
   </div>
 </nav>
 
