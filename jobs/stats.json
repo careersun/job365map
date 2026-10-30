@@ -246,5 +246,115 @@
       "name": "教育",
       "n": 1
     }
+  ],
+  "latest": [
+    {
+      "id": "J0176",
+      "title": "港式餐廳 店長",
+      "region": "新竹縣",
+      "area": "竹北市",
+      "salary": "月薪46,000~52,000",
+      "shift": "排班",
+      "url": "https://careersun.github.io/job365map/jobs/J0176.html"
+    },
+    {
+      "id": "J0175",
+      "title": "港式餐廳 外場服務人員",
+      "region": "新竹縣",
+      "area": "竹北市",
+      "salary": "月薪36,000~40,000",
+      "shift": "排班",
+      "url": "https://careersun.github.io/job365map/jobs/J0175.html"
+    },
+    {
+      "id": "J0174",
+      "title": "二二夜 駐廠設備人員",
+      "region": "新竹市",
+      "area": "東區",
+      "salary": "月薪55,000~58,000起",
+      "shift": "夜班",
+      "url": "https://careersun.github.io/job365map/jobs/J0174.html"
+    },
+    {
+      "id": "J0173",
+      "title": "常日班 駐廠設備人員",
+      "region": "新竹市",
+      "area": "東區",
+      "salary": "月薪47,000~50,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0173.html"
+    },
+    {
+      "id": "J0172",
+      "title": "現場工程師",
+      "region": "彰化縣",
+      "area": "彰化市",
+      "salary": "月薪48,000~65,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0172.html"
+    },
+    {
+      "id": "J0171",
+      "title": "品管工程師",
+      "region": "彰化縣",
+      "area": "彰化市",
+      "salary": "月薪50,000~65,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0171.html"
+    },
+    {
+      "id": "J0170",
+      "title": "防震基座安裝人員",
+      "region": "新竹市",
+      "area": "東區",
+      "salary": "月薪39,500",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0170.html"
+    },
+    {
+      "id": "J0169",
+      "title": "中班 派車調度主任",
+      "region": "桃園市",
+      "area": "楊梅區",
+      "salary": "月薪55,000",
+      "shift": "中班",
+      "url": "https://careersun.github.io/job365map/jobs/J0169.html"
+    },
+    {
+      "id": "J0168",
+      "title": "中班 資深倉管員",
+      "region": "桃園市",
+      "area": "觀音區",
+      "salary": "月薪50,000",
+      "shift": "中班",
+      "url": "https://careersun.github.io/job365map/jobs/J0168.html"
+    },
+    {
+      "id": "J0167",
+      "title": "夜班倉儲組長",
+      "region": "桃園市",
+      "area": "觀音區",
+      "salary": "月薪53,000",
+      "shift": "晚班",
+      "url": "https://careersun.github.io/job365map/jobs/J0167.html"
+    },
+    {
+      "id": "J0166",
+      "title": "送貨司機 (3.5噸)",
+      "region": "新北市",
+      "area": "板橋區",
+      "salary": "月薪60000",
+      "shift": "晚班",
+      "url": "https://careersun.github.io/job365map/jobs/J0166.html"
+    },
+    {
+      "id": "J0165",
+      "title": "事故處理專員",
+      "region": "台北市",
+      "area": "松山區",
+      "salary": "面議",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0165.html"
+    }
   ]
 }
