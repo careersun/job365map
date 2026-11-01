@@ -603,7 +603,14 @@ async function main() {
     monthly: (() => { let sum = 0; return Object.entries(posted.reduce((m, d) => { if (d) m[d.slice(0, 7)] = (m[d.slice(0, 7)] || 0) + 1; return m; }, {}))
       .sort((a, b) => a[0].localeCompare(b[0])).map(([month, n]) => ({ month, n: (sum += n) })).slice(-6); })(),
     industries: tally(open.map((j) => j.industry)),
-    regions: tally(open.map(regionOf)).map((r) => ({ ...r, url: areaLinks.some((a) => a.name === r.name) ? `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${REGION_SLUGS[r.name]}.html` : "" })),
+    regions: tally(open.map(regionOf)).map((r) => {
+      const inR = open.filter((j) => regionOf(j) === r.name);
+      return { ...r, url: areaLinks.some((a) => a.name === r.name) ? `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${REGION_SLUGS[r.name]}.html` : "",
+        // 給 /hire/ 地區頁顯示：該地區主要產業與最新職缺
+        industries: tally(inR.map((j) => j.industry)).slice(0, 5),
+        latest: [...inR].sort((x, y) => (y.datePosted || "").localeCompare(x.datePosted || "") || y.id.localeCompare(x.id)).slice(0, 3)
+          .map((j) => ({ title: j.title, area: localityOf(j), url: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${j.id}.html` })) };
+    }),
     categories: tally(open.map((j) => j.category)),
     // 首頁「最新職缺」卡片用
     latest: [...open].sort((a, b) => (b.datePosted || "").localeCompare(a.datePosted || "") || b.id.localeCompare(a.id)).slice(0, 12)
