@@ -110,62 +110,438 @@
     {
       "name": "新竹縣",
       "n": 35,
-      "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-county.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-county.html",
+      "industries": [
+        {
+          "name": "半導體",
+          "n": 15
+        },
+        {
+          "name": "製造業",
+          "n": 6
+        },
+        {
+          "name": "餐飲業",
+          "n": 6
+        },
+        {
+          "name": "科技業",
+          "n": 4
+        },
+        {
+          "name": "營造業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "港式餐廳 店長",
+          "area": "竹北市",
+          "url": "https://careersun.github.io/job365map/jobs/J0176.html"
+        },
+        {
+          "title": "港式餐廳 外場服務人員",
+          "area": "竹北市",
+          "url": "https://careersun.github.io/job365map/jobs/J0175.html"
+        },
+        {
+          "title": "職業安全衛生管理員",
+          "area": "芎林鄉",
+          "url": "https://careersun.github.io/job365map/jobs/J0161.html"
+        }
+      ]
     },
     {
       "name": "桃園市",
       "n": 34,
-      "url": "https://careersun.github.io/job365map/jobs/area/taoyuan.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/taoyuan.html",
+      "industries": [
+        {
+          "name": "製造業",
+          "n": 13
+        },
+        {
+          "name": "銷售業",
+          "n": 3
+        },
+        {
+          "name": "進出口報關",
+          "n": 3
+        },
+        {
+          "name": "其他醫療與保健服務業",
+          "n": 3
+        },
+        {
+          "name": "科技業",
+          "n": 2
+        }
+      ],
+      "latest": [
+        {
+          "title": "中班 派車調度主任",
+          "area": "楊梅區",
+          "url": "https://careersun.github.io/job365map/jobs/J0169.html"
+        },
+        {
+          "title": "中班 資深倉管員",
+          "area": "觀音區",
+          "url": "https://careersun.github.io/job365map/jobs/J0168.html"
+        },
+        {
+          "title": "夜班倉儲組長",
+          "area": "觀音區",
+          "url": "https://careersun.github.io/job365map/jobs/J0167.html"
+        }
+      ]
     },
     {
       "name": "台北市",
       "n": 27,
-      "url": "https://careersun.github.io/job365map/jobs/area/taipei.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/taipei.html",
+      "industries": [
+        {
+          "name": "餐飲業",
+          "n": 13
+        },
+        {
+          "name": "軟體與網路相關",
+          "n": 6
+        },
+        {
+          "name": "旅館業",
+          "n": 5
+        },
+        {
+          "name": "銷售業",
+          "n": 3
+        }
+      ],
+      "latest": [
+        {
+          "title": "事故處理專員",
+          "area": "松山區",
+          "url": "https://careersun.github.io/job365map/jobs/J0165.html"
+        },
+        {
+          "title": "五星飯店 中式廚師",
+          "area": "中山區",
+          "url": "https://careersun.github.io/job365map/jobs/J0160.html"
+        },
+        {
+          "title": "五星飯店餐飲服務員",
+          "area": "中山區",
+          "url": "https://careersun.github.io/job365map/jobs/J0159.html"
+        }
+      ]
     },
     {
       "name": "新竹市",
       "n": 26,
-      "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-city.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-city.html",
+      "industries": [
+        {
+          "name": "半導體",
+          "n": 14
+        },
+        {
+          "name": "製造業",
+          "n": 3
+        },
+        {
+          "name": "工程相關",
+          "n": 2
+        },
+        {
+          "name": "半導體業",
+          "n": 2
+        },
+        {
+          "name": "餐飲業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "二二夜 駐廠設備人員",
+          "area": "東區",
+          "url": "https://careersun.github.io/job365map/jobs/J0174.html"
+        },
+        {
+          "title": "常日班 駐廠設備人員",
+          "area": "東區",
+          "url": "https://careersun.github.io/job365map/jobs/J0173.html"
+        },
+        {
+          "title": "防震基座安裝人員",
+          "area": "東區",
+          "url": "https://careersun.github.io/job365map/jobs/J0170.html"
+        }
+      ]
     },
     {
       "name": "新北市",
       "n": 16,
-      "url": "https://careersun.github.io/job365map/jobs/area/new-taipei.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/new-taipei.html",
+      "industries": [
+        {
+          "name": "銷售業",
+          "n": 5
+        },
+        {
+          "name": "餐飲業",
+          "n": 4
+        },
+        {
+          "name": "製造業",
+          "n": 2
+        },
+        {
+          "name": "軟體與網路相關",
+          "n": 2
+        },
+        {
+          "name": "零售業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "送貨司機 (3.5噸)",
+          "area": "板橋區",
+          "url": "https://careersun.github.io/job365map/jobs/J0166.html"
+        },
+        {
+          "title": "貨車司機 (五噸)",
+          "area": "五股區",
+          "url": "https://careersun.github.io/job365map/jobs/J0164.html"
+        },
+        {
+          "title": "三重 一般會計 周休六日見紅休",
+          "area": "三重區",
+          "url": "https://careersun.github.io/job365map/jobs/J0152.html"
+        }
+      ]
     },
     {
       "name": "台中市",
       "n": 10,
-      "url": "https://careersun.github.io/job365map/jobs/area/taichung.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/taichung.html",
+      "industries": [
+        {
+          "name": "銷售業",
+          "n": 2
+        },
+        {
+          "name": "製造業",
+          "n": 2
+        },
+        {
+          "name": "半導體",
+          "n": 2
+        },
+        {
+          "name": "技職",
+          "n": 2
+        },
+        {
+          "name": "美業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "便利商店全職 早中夜皆有 固定班 (大甲)",
+          "area": "大甲區",
+          "url": "https://careersun.github.io/job365map/jobs/J0150.html"
+        },
+        {
+          "title": "高級護膚品牌 銷售業務",
+          "area": "北區",
+          "url": "https://careersun.github.io/job365map/jobs/J0142.html"
+        },
+        {
+          "title": "豐原sogo 連鎖汽車美容 學徒",
+          "area": "豐原區",
+          "url": "https://careersun.github.io/job365map/jobs/J0111.html"
+        }
+      ]
     },
     {
       "name": "苗栗縣",
       "n": 9,
-      "url": "https://careersun.github.io/job365map/jobs/area/miaoli.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/miaoli.html",
+      "industries": [
+        {
+          "name": "服務業",
+          "n": 6
+        },
+        {
+          "name": "營造業",
+          "n": 2
+        },
+        {
+          "name": "製造業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "便利商店長/儲備幹部 苗栗區",
+          "area": "竹南鎮",
+          "url": "https://careersun.github.io/job365map/jobs/J0151.html"
+        },
+        {
+          "title": "便利商店全職 早中夜皆有 固定班 (公館)",
+          "area": "公館鄉",
+          "url": "https://careersun.github.io/job365map/jobs/J0149.html"
+        },
+        {
+          "title": "便利商店全職 早中夜皆有 固定班 (三義)",
+          "area": "三義鄉",
+          "url": "https://careersun.github.io/job365map/jobs/J0148.html"
+        }
+      ]
     },
     {
       "name": "高雄市",
       "n": 6,
-      "url": "https://careersun.github.io/job365map/jobs/area/kaohsiung.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/kaohsiung.html",
+      "industries": [
+        {
+          "name": "銷售業",
+          "n": 2
+        },
+        {
+          "name": "技職",
+          "n": 2
+        },
+        {
+          "name": "餐飲業",
+          "n": 2
+        }
+      ],
+      "latest": [
+        {
+          "title": "✦日式鐵板燒 廚師",
+          "area": "鳳山區",
+          "url": "https://careersun.github.io/job365map/jobs/J0119.html"
+        },
+        {
+          "title": "✦日式鐵板燒 廚師",
+          "area": "楠梓區",
+          "url": "https://careersun.github.io/job365map/jobs/J0118.html"
+        },
+        {
+          "title": "高雄漢神 連鎖汽車美容 學徒",
+          "area": "漢神區",
+          "url": "https://careersun.github.io/job365map/jobs/J0113.html"
+        }
+      ]
     },
     {
       "name": "台南市",
       "n": 5,
-      "url": "https://careersun.github.io/job365map/jobs/area/tainan.html"
+      "url": "https://careersun.github.io/job365map/jobs/area/tainan.html",
+      "industries": [
+        {
+          "name": "餐飲業",
+          "n": 3
+        },
+        {
+          "name": "銷售業",
+          "n": 1
+        },
+        {
+          "name": "營造業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "永康區 美式餐廳 外場正職",
+          "area": "永康區",
+          "url": "https://careersun.github.io/job365map/jobs/J0155.html"
+        },
+        {
+          "title": "連鎖日式燒肉 固定晚班正職 三井outlet",
+          "area": "歸仁區",
+          "url": "https://careersun.github.io/job365map/jobs/J0089.html"
+        },
+        {
+          "title": "連鎖日式燒肉 固定早班正職 三井outlet",
+          "area": "歸仁區",
+          "url": "https://careersun.github.io/job365map/jobs/J0088.html"
+        }
+      ]
     },
     {
       "name": "嘉義市",
       "n": 2,
-      "url": ""
+      "url": "",
+      "industries": [
+        {
+          "name": "銷售業",
+          "n": 1
+        },
+        {
+          "name": "餐飲業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "✦內外場人員",
+          "area": "西區",
+          "url": "https://careersun.github.io/job365map/jobs/J0121.html"
+        },
+        {
+          "title": "連鎖美式賣場 嘉義 展售人員",
+          "area": "東區",
+          "url": "https://careersun.github.io/job365map/jobs/J0085.html"
+        }
+      ]
     },
     {
       "name": "彰化縣",
       "n": 2,
-      "url": ""
+      "url": "",
+      "industries": [
+        {
+          "name": "營造業",
+          "n": 2
+        }
+      ],
+      "latest": [
+        {
+          "title": "現場工程師",
+          "area": "彰化市",
+          "url": "https://careersun.github.io/job365map/jobs/J0172.html"
+        },
+        {
+          "title": "品管工程師",
+          "area": "彰化市",
+          "url": "https://careersun.github.io/job365map/jobs/J0171.html"
+        }
+      ]
     },
     {
       "name": "屏東縣",
       "n": 1,
-      "url": ""
+      "url": "",
+      "industries": [
+        {
+          "name": "餐飲業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "✦日式鐵板燒 廚師",
+          "area": "屏東市",
+          "url": "https://careersun.github.io/job365map/jobs/J0120.html"
+        }
+      ]
     }
   ],
   "categories": [
