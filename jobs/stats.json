@@ -1,7 +1,7 @@
 {
   "updated": "2026-11-02",
-  "open": 173,
-  "new30": 17,
+  "open": 175,
+  "new30": 19,
   "monthly": [
     {
       "month": "2026-07",
@@ -17,7 +17,7 @@
     },
     {
       "month": "2026-10",
-      "n": 176
+      "n": 178
     }
   ],
   "industries": [
@@ -66,6 +66,10 @@
       "n": 4
     },
     {
+      "name": "半導體業",
+      "n": 4
+    },
+    {
       "name": "工程相關",
       "n": 3
     },
@@ -76,10 +80,6 @@
     {
       "name": "其他醫療與保健服務業",
       "n": 3
-    },
-    {
-      "name": "半導體業",
-      "n": 2
     },
     {
       "name": "系統整合",
@@ -325,7 +325,7 @@
     },
     {
       "name": "台中市",
-      "n": 10,
+      "n": 11,
       "url": "https://careersun.github.io/job365map/jobs/area/taichung.html",
       "industries": [
         {
@@ -351,6 +351,11 @@
       ],
       "latest": [
         {
+          "title": "Scubber 設備工程師",
+          "area": "后里區",
+          "url": "https://careersun.github.io/job365map/jobs/J0177.html"
+        },
+        {
           "title": "便利商店全職 早中夜皆有 固定班 (大甲)",
           "area": "大甲區",
           "url": "https://careersun.github.io/job365map/jobs/J0150.html"
@@ -359,11 +364,6 @@
           "title": "高級護膚品牌 銷售業務",
           "area": "北區",
           "url": "https://careersun.github.io/job365map/jobs/J0142.html"
-        },
-        {
-          "title": "豐原sogo 連鎖汽車美容 學徒",
-          "area": "豐原區",
-          "url": "https://careersun.github.io/job365map/jobs/J0111.html"
         }
       ]
     },
@@ -404,6 +404,46 @@
       ]
     },
     {
+      "name": "台南市",
+      "n": 6,
+      "url": "https://careersun.github.io/job365map/jobs/area/tainan.html",
+      "industries": [
+        {
+          "name": "餐飲業",
+          "n": 3
+        },
+        {
+          "name": "銷售業",
+          "n": 1
+        },
+        {
+          "name": "營造業",
+          "n": 1
+        },
+        {
+          "name": "半導體業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "Chiller 設備工程師",
+          "area": "善化區",
+          "url": "https://careersun.github.io/job365map/jobs/J0178.html"
+        },
+        {
+          "title": "永康區 美式餐廳 外場正職",
+          "area": "永康區",
+          "url": "https://careersun.github.io/job365map/jobs/J0155.html"
+        },
+        {
+          "title": "連鎖日式燒肉 固定晚班正職 三井outlet",
+          "area": "歸仁區",
+          "url": "https://careersun.github.io/job365map/jobs/J0089.html"
+        }
+      ]
+    },
+    {
       "name": "高雄市",
       "n": 6,
       "url": "https://careersun.github.io/job365map/jobs/area/kaohsiung.html",
@@ -436,42 +476,6 @@
           "title": "高雄漢神 連鎖汽車美容 學徒",
           "area": "漢神區",
           "url": "https://careersun.github.io/job365map/jobs/J0113.html"
-        }
-      ]
-    },
-    {
-      "name": "台南市",
-      "n": 5,
-      "url": "https://careersun.github.io/job365map/jobs/area/tainan.html",
-      "industries": [
-        {
-          "name": "餐飲業",
-          "n": 3
-        },
-        {
-          "name": "銷售業",
-          "n": 1
-        },
-        {
-          "name": "營造業",
-          "n": 1
-        }
-      ],
-      "latest": [
-        {
-          "title": "永康區 美式餐廳 外場正職",
-          "area": "永康區",
-          "url": "https://careersun.github.io/job365map/jobs/J0155.html"
-        },
-        {
-          "title": "連鎖日式燒肉 固定晚班正職 三井outlet",
-          "area": "歸仁區",
-          "url": "https://careersun.github.io/job365map/jobs/J0089.html"
-        },
-        {
-          "title": "連鎖日式燒肉 固定早班正職 三井outlet",
-          "area": "歸仁區",
-          "url": "https://careersun.github.io/job365map/jobs/J0088.html"
         }
       ]
     },
@@ -563,7 +567,7 @@
     },
     {
       "name": "工程師",
-      "n": 14
+      "n": 16
     },
     {
       "name": "管理職",
@@ -643,6 +647,24 @@
     }
   ],
   "latest": [
+    {
+      "id": "J0178",
+      "title": "Chiller 設備工程師",
+      "region": "台南市",
+      "area": "善化區",
+      "salary": "月薪45,000~70,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0178.html"
+    },
+    {
+      "id": "J0177",
+      "title": "Scubber 設備工程師",
+      "region": "台中市",
+      "area": "后里區",
+      "salary": "月薪45,000~70,000起",
+      "shift": "排班",
+      "url": "https://careersun.github.io/job365map/jobs/J0177.html"
+    },
     {
       "id": "J0176",
       "title": "港式餐廳 店長",
@@ -732,24 +754,6 @@
       "salary": "月薪53,000",
       "shift": "晚班",
       "url": "https://careersun.github.io/job365map/jobs/J0167.html"
-    },
-    {
-      "id": "J0166",
-      "title": "送貨司機 (3.5噸)",
-      "region": "新北市",
-      "area": "板橋區",
-      "salary": "月薪60000",
-      "shift": "晚班",
-      "url": "https://careersun.github.io/job365map/jobs/J0166.html"
-    },
-    {
-      "id": "J0165",
-      "title": "事故處理專員",
-      "region": "台北市",
-      "area": "松山區",
-      "salary": "面議",
-      "shift": "日班",
-      "url": "https://careersun.github.io/job365map/jobs/J0165.html"
     }
   ]
 }
