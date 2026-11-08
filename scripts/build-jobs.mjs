@@ -378,10 +378,12 @@ function pageHtml(job, { closed }) {
   const loc = parseAddress(job.address);
   const area = [loc.addressRegion, loc.addressLocality !== loc.addressRegion ? loc.addressLocality : ""].join("");
   // 標題：職稱｜地區（簡稱）｜薪資 - JOB365，例如「堆高機人員｜桃園蘆竹｜月薪36,000起 - JOB365」
-  const shortArea = [
-    loc.addressRegion.replace(/[縣市]$/, ""),
-    loc.addressLocality !== loc.addressRegion ? (loc.addressLocality.length > 2 ? loc.addressLocality.replace(/[區鄉鎮市]$/, "") : loc.addressLocality) : "",
-  ].join("").replace(/臺/g, "台") || job.address;
+  const regionShort = loc.addressRegion.replace(/[縣市]$/, "");
+  const localityShort = loc.addressLocality !== loc.addressRegion ? (loc.addressLocality.length > 2 ? loc.addressLocality.replace(/[區鄉鎮市]$/, "") : loc.addressLocality) : "";
+  // 鄉鎮名和縣市同名（桃園市桃園區、苗栗縣苗栗市）時，只寫「桃園區」「苗栗市」，避免「桃園桃園」
+  const shortArea = (localityShort && localityShort === regionShort
+    ? loc.addressLocality
+    : [regionShort, localityShort].join("")).replace(/臺/g, "台") || job.address;
   const salaryShort = job.salaryText && !/^面議$/.test(job.salaryText) ? job.salaryText.slice(0, 20) : "";
   const pageTitle = [job.title, shortArea, salaryShort].filter(Boolean).join("｜") + " - JOB365";
   const summary = [job.salaryText === "面議" ? "薪資面議" : job.salaryText, [job.shift, job.hours].filter(Boolean).join(" "), job.restDay].filter(Boolean).join("，");
