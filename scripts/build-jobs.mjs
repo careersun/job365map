@@ -334,7 +334,7 @@ const mapJobUrl = (job) =>
 // ---------------- 4. 產生頁面 ----------------
 function buildJsonLd(job) {
   const descHtml = [
-    `<p>${esc(job.address)}${job.industry ? esc(job.industry) : ""}쉮隊「${esc(job.title)}」${job.category ? `（${esc(job.category)}）` : ""}。</p>`,
+    `<p>${esc(job.address)}${job.industry ? esc(job.industry) : ""}徵求「${esc(job.title)}」${job.category ? `（${esc(job.category)}）` : ""}。</p>`,
     job.description && `<p><strong>工作內容</strong><br>${nl2br(job.description)}</p>`,
     job.requirements && `<p><strong>應徵條件</strong><br>${nl2br(job.requirements)}</p>`,
     job.hours && `<p><strong>工作時間</strong><br>${nl2br([job.shift, job.hours].filter(Boolean).join("　"))}</p>`,
@@ -375,7 +375,7 @@ function pageHtml(job, { closed }) {
   // 標題：職稱｜地區（簡稱）｜薪資 - JOB365，例如「堆高機人員｜桃園蘆竹｜月薪36,000起 - JOB365」
   const shortArea = [
     loc.addressRegion.replace(/[縣市]$/, ""),
-    loc.addressLocality !== loc.addressRegion ? (loc.addressLocality.length 6 2 ? loc.addressLocality.replace(/[區鄉鎮市]$/, "") : loc.addressLocality) : "",
+    loc.addressLocality !== loc.addressRegion ? (loc.addressLocality.length > 2 ? loc.addressLocality.replace(/[區鄉鎮市]$/, "") : loc.addressLocality) : "",
   ].join("").replace(/臺/g, "台") || job.address;
   const salaryShort = job.salaryText && !/^面議$/.test(job.salaryText) ? job.salaryText.slice(0, 20) : "";
   const pageTitle = [job.title, shortArea, salaryShort].filter(Boolean).join("｜") + " - JOB365";
@@ -426,7 +426,7 @@ ${gaHead()}
   ${topHeader()}
   <nav class="crumbs"><a href="${CONFIG.SITE_URL}/">職缺地圖</a> › ${REGION_SLUGS[regionOf(job)] ? `<a href="area/${REGION_SLUGS[regionOf(job)]}.html">${esc(regionOf(job))}職缺</a> › ` : ""}${esc(job.title)}</nav>
   <article class="card">
-    ${closed ? '<div class="closed">此ځ�缺已停止招募，歡迎回到職缺地圖查看其他職缺。</div>' : ""}
+    ${closed ? '<div class="closed">此職缺已停止招募，歡迎回到職缺地圖查看其他職缺。</div>' : ""}
     <h1>${esc(job.title)}</h1>
     <p class="meta">${esc(job.company || CONFIG.ORG.name)}　·　${esc(job.address)}</p>
     <div class="tags">
@@ -473,7 +473,7 @@ function areaHtml(region, slug, jobs, areaLinks) {
   const inds = Object.entries(jobs.reduce((m, j) => { if (j.industry) m[j.industry] = (m[j.industry] || 0) + 1; return m; }, {}))
     .sort((a, b) => b[1] - a[1]).map(([k]) => k);
   const locNames = locs.map(([k]) => k).filter((k) => k !== "其他地區");
-  const title = `${region}正職職缺 ${n} 筆｜JOB365 詷缺地圖`;
+  const title = `${region}正職職缺 ${n} 筆｜JOB365 職缺地圖`;
   const desc = n
     ? `${region}目前有 ${n} 筆招募中正職職缺${locNames.length ? `，分布在${locNames.slice(0, 4).join("、")}等地` : ""}${inds.length ? `，產業以${inds.slice(0, 3).join("、")}為主` : ""}。`
     : `${region}目前暫無招募中職缺，歡迎查看其他地區職缺。`;
@@ -595,7 +595,7 @@ async function main() {
   const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : {};
 
   const hasStatusCol = rows.some((r) => pick(r, "status"));
-  if (!hasStatusCol) console.warn("⚠ 找不到「狀態」欄$��：所有職缺都會被視為招募中。建議在試算表新增「狀態」欄。");
+  if (!hasStatusCol) console.warn("⚠ 找不到「狀態」欄位：所有職缺都會被視為招募中。建議在試算表新增「狀態」欄。");
 
   const open = [];
   const posted = []; // 每筆職缺（含已停招）的刊登日期，用來算「近 30 天新增」
