@@ -1,7 +1,7 @@
 {
-  "updated": "2026-11-04",
-  "open": 175,
-  "new30": 19,
+  "updated": "2026-11-08",
+  "open": 185,
+  "new30": 26,
   "monthly": [
     {
       "month": "2026-07",
@@ -18,20 +18,24 @@
     {
       "month": "2026-10",
       "n": 178
+    },
+    {
+      "month": "2026-11",
+      "n": 188
     }
   ],
   "industries": [
+    {
+      "name": "餐飲業",
+      "n": 34
+    },
     {
       "name": "半導體",
       "n": 33
     },
     {
-      "name": "餐飲業",
-      "n": 33
-    },
-    {
       "name": "製造業",
-      "n": 27
+      "n": 28
     },
     {
       "name": "銷售業",
@@ -82,6 +86,18 @@
       "n": 3
     },
     {
+      "name": "電腦及其週邊設備製造業",
+      "n": 3
+    },
+    {
+      "name": "建物裝修及裝潢業",
+      "n": 3
+    },
+    {
+      "name": "建築工程",
+      "n": 2
+    },
+    {
       "name": "系統整合",
       "n": 1
     },
@@ -107,6 +123,50 @@
     }
   ],
   "regions": [
+    {
+      "name": "桃園市",
+      "n": 36,
+      "url": "https://careersun.github.io/job365map/jobs/area/taoyuan.html",
+      "industries": [
+        {
+          "name": "製造業",
+          "n": 13
+        },
+        {
+          "name": "銷售業",
+          "n": 3
+        },
+        {
+          "name": "進出口報關",
+          "n": 3
+        },
+        {
+          "name": "其他醫療與保健服務業",
+          "n": 3
+        },
+        {
+          "name": "科技業",
+          "n": 2
+        }
+      ],
+      "latest": [
+        {
+          "title": "觀音 工地主任",
+          "area": "觀音區",
+          "url": "https://careersun.github.io/job365map/jobs/J0188.html"
+        },
+        {
+          "title": "桃園 會計人員",
+          "area": "桃園區",
+          "url": "https://careersun.github.io/job365map/jobs/J0187.html"
+        },
+        {
+          "title": "中班 派車調度主任",
+          "area": "楊梅區",
+          "url": "https://careersun.github.io/job365map/jobs/J0169.html"
+        }
+      ]
+    },
     {
       "name": "新竹縣",
       "n": 35,
@@ -152,52 +212,8 @@
       ]
     },
     {
-      "name": "桃園市",
-      "n": 34,
-      "url": "https://careersun.github.io/job365map/jobs/area/taoyuan.html",
-      "industries": [
-        {
-          "name": "製造業",
-          "n": 13
-        },
-        {
-          "name": "銷售業",
-          "n": 3
-        },
-        {
-          "name": "進出口報關",
-          "n": 3
-        },
-        {
-          "name": "其他醫療與保健服務業",
-          "n": 3
-        },
-        {
-          "name": "科技業",
-          "n": 2
-        }
-      ],
-      "latest": [
-        {
-          "title": "中班 派車調度主任",
-          "area": "楊梅區",
-          "url": "https://careersun.github.io/job365map/jobs/J0169.html"
-        },
-        {
-          "title": "中班 資深倉管員",
-          "area": "觀音區",
-          "url": "https://careersun.github.io/job365map/jobs/J0168.html"
-        },
-        {
-          "title": "夜班倉儲組長",
-          "area": "觀音區",
-          "url": "https://careersun.github.io/job365map/jobs/J0167.html"
-        }
-      ]
-    },
-    {
       "name": "台北市",
-      "n": 27,
+      "n": 30,
       "url": "https://careersun.github.io/job365map/jobs/area/taipei.html",
       "industries": [
         {
@@ -215,29 +231,33 @@
         {
           "name": "銷售業",
           "n": 3
+        },
+        {
+          "name": "電腦及其週邊設備製造業",
+          "n": 3
         }
       ],
       "latest": [
         {
-          "title": "事故處理專員",
-          "area": "松山區",
-          "url": "https://careersun.github.io/job365map/jobs/J0165.html"
+          "title": "雲端專案工程師",
+          "area": "南港區",
+          "url": "https://careersun.github.io/job365map/jobs/J0181.html"
         },
         {
-          "title": "五星飯店 中式廚師",
-          "area": "中山區",
-          "url": "https://careersun.github.io/job365map/jobs/J0160.html"
+          "title": "3C品牌專賣 門市店長",
+          "area": "信義區",
+          "url": "https://careersun.github.io/job365map/jobs/J0180.html"
         },
         {
-          "title": "五星飯店餐飲服務員",
-          "area": "中山區",
-          "url": "https://careersun.github.io/job365map/jobs/J0159.html"
+          "title": "3C品牌專賣 門市人員",
+          "area": "信義區",
+          "url": "https://careersun.github.io/job365map/jobs/J0179.html"
         }
       ]
     },
     {
       "name": "新竹市",
-      "n": 26,
+      "n": 27,
       "url": "https://careersun.github.io/job365map/jobs/area/hsinchu-city.html",
       "industries": [
         {
@@ -246,7 +266,7 @@
         },
         {
           "name": "製造業",
-          "n": 3
+          "n": 4
         },
         {
           "name": "工程相關",
@@ -263,6 +283,11 @@
       ],
       "latest": [
         {
+          "title": "便服作業員 周休二日",
+          "area": "香山區",
+          "url": "https://careersun.github.io/job365map/jobs/J0182.html"
+        },
+        {
           "title": "二二夜 駐廠設備人員",
           "area": "東區",
           "url": "https://careersun.github.io/job365map/jobs/J0174.html"
@@ -271,11 +296,6 @@
           "title": "常日班 駐廠設備人員",
           "area": "東區",
           "url": "https://careersun.github.io/job365map/jobs/J0173.html"
-        },
-        {
-          "title": "防震基座安裝人員",
-          "area": "東區",
-          "url": "https://careersun.github.io/job365map/jobs/J0170.html"
         }
       ]
     },
@@ -463,12 +483,12 @@
       ],
       "latest": [
         {
-          "title": "✦日式鐵板燒 廚師",
+          "title": "日式鐵板燒 廚師",
           "area": "鳳山區",
           "url": "https://careersun.github.io/job365map/jobs/J0119.html"
         },
         {
-          "title": "✦日式鐵板燒 廚師",
+          "title": "日式鐵板燒 廚師",
           "area": "楠梓區",
           "url": "https://careersun.github.io/job365map/jobs/J0118.html"
         },
@@ -495,7 +515,7 @@
       ],
       "latest": [
         {
-          "title": "✦內外場人員",
+          "title": "內外場人員",
           "area": "西區",
           "url": "https://careersun.github.io/job365map/jobs/J0121.html"
         },
@@ -541,7 +561,7 @@
       ],
       "latest": [
         {
-          "title": "✦日式鐵板燒 廚師",
+          "title": "日式鐵板燒 廚師",
           "area": "屏東市",
           "url": "https://careersun.github.io/job365map/jobs/J0120.html"
         }
@@ -551,22 +571,22 @@
   "categories": [
     {
       "name": "技術員",
-      "n": 33
+      "n": 34
     },
     {
       "name": "餐飲人員",
-      "n": 24
+      "n": 25
     },
     {
       "name": "銷售人員",
-      "n": 18
-    },
-    {
-      "name": "內勤",
-      "n": 16
+      "n": 20
     },
     {
       "name": "工程師",
+      "n": 17
+    },
+    {
+      "name": "內勤",
       "n": 16
     },
     {
@@ -602,7 +622,15 @@
       "n": 3
     },
     {
+      "name": "專業職",
+      "n": 3
+    },
+    {
       "name": "品管",
+      "n": 2
+    },
+    {
+      "name": "業務人員",
       "n": 2
     },
     {
@@ -620,10 +648,6 @@
     {
       "name": "司機",
       "n": 2
-    },
-    {
-      "name": "業務人員",
-      "n": 1
     },
     {
       "name": "廠務",
@@ -644,9 +668,103 @@
     {
       "name": "教育",
       "n": 1
+    },
+    {
+      "name": "會計",
+      "n": 1
     }
   ],
   "latest": [
+    {
+      "id": "J0188",
+      "title": "觀音 工地主任",
+      "region": "桃園市",
+      "area": "觀音區",
+      "salary": "月薪80,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0188.html"
+    },
+    {
+      "id": "J0187",
+      "title": "桃園 會計人員",
+      "region": "桃園市",
+      "area": "桃園區",
+      "salary": "月薪40,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0187.html"
+    },
+    {
+      "id": "J0186",
+      "title": "(高考) 消防安檢工程師",
+      "region": "",
+      "area": "台中",
+      "salary": "月薪35,000~53,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0186.html"
+    },
+    {
+      "id": "J0185",
+      "title": "(高考) 消防設備士",
+      "region": "",
+      "area": "台中",
+      "salary": "月薪40,000~60,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0185.html"
+    },
+    {
+      "id": "J0184",
+      "title": "消防安全設備 業務工程師",
+      "region": "",
+      "area": "台中",
+      "salary": "月薪36,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0184.html"
+    },
+    {
+      "id": "J0183",
+      "title": "桃園台茂 餐飲全職(自選內外場)",
+      "region": "",
+      "area": "桃園",
+      "salary": "月薪40,000起",
+      "shift": "排班",
+      "url": "https://careersun.github.io/job365map/jobs/J0183.html"
+    },
+    {
+      "id": "J0182",
+      "title": "便服作業員 周休二日",
+      "region": "新竹市",
+      "area": "香山區",
+      "salary": "月薪29,500~30,500起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0182.html"
+    },
+    {
+      "id": "J0181",
+      "title": "雲端專案工程師",
+      "region": "台北市",
+      "area": "南港區",
+      "salary": "月薪38,000~60,000起",
+      "shift": "日班",
+      "url": "https://careersun.github.io/job365map/jobs/J0181.html"
+    },
+    {
+      "id": "J0180",
+      "title": "3C品牌專賣 門市店長",
+      "region": "台北市",
+      "area": "信義區",
+      "salary": "面議",
+      "shift": "排班",
+      "url": "https://careersun.github.io/job365map/jobs/J0180.html"
+    },
+    {
+      "id": "J0179",
+      "title": "3C品牌專賣 門市人員",
+      "region": "台北市",
+      "area": "信義區",
+      "salary": "月薪35,000~50,000起",
+      "shift": "排班",
+      "url": "https://careersun.github.io/job365map/jobs/J0179.html"
+    },
     {
       "id": "J0178",
       "title": "Chiller 設備工程師",
@@ -664,96 +782,6 @@
       "salary": "月薪45,000~70,000起",
       "shift": "排班",
       "url": "https://careersun.github.io/job365map/jobs/J0177.html"
-    },
-    {
-      "id": "J0176",
-      "title": "港式餐廳 店長",
-      "region": "新竹縣",
-      "area": "竹北市",
-      "salary": "月薪46,000~52,000",
-      "shift": "排班",
-      "url": "https://careersun.github.io/job365map/jobs/J0176.html"
-    },
-    {
-      "id": "J0175",
-      "title": "港式餐廳 外場服務人員",
-      "region": "新竹縣",
-      "area": "竹北市",
-      "salary": "月薪36,000~40,000",
-      "shift": "排班",
-      "url": "https://careersun.github.io/job365map/jobs/J0175.html"
-    },
-    {
-      "id": "J0174",
-      "title": "二二夜 駐廠設備人員",
-      "region": "新竹市",
-      "area": "東區",
-      "salary": "月薪55,000~58,000起",
-      "shift": "夜班",
-      "url": "https://careersun.github.io/job365map/jobs/J0174.html"
-    },
-    {
-      "id": "J0173",
-      "title": "常日班 駐廠設備人員",
-      "region": "新竹市",
-      "area": "東區",
-      "salary": "月薪47,000~50,000起",
-      "shift": "日班",
-      "url": "https://careersun.github.io/job365map/jobs/J0173.html"
-    },
-    {
-      "id": "J0172",
-      "title": "現場工程師",
-      "region": "彰化縣",
-      "area": "彰化市",
-      "salary": "月薪48,000~65,000起",
-      "shift": "日班",
-      "url": "https://careersun.github.io/job365map/jobs/J0172.html"
-    },
-    {
-      "id": "J0171",
-      "title": "品管工程師",
-      "region": "彰化縣",
-      "area": "彰化市",
-      "salary": "月薪50,000~65,000起",
-      "shift": "日班",
-      "url": "https://careersun.github.io/job365map/jobs/J0171.html"
-    },
-    {
-      "id": "J0170",
-      "title": "防震基座安裝人員",
-      "region": "新竹市",
-      "area": "東區",
-      "salary": "月薪39,500",
-      "shift": "日班",
-      "url": "https://careersun.github.io/job365map/jobs/J0170.html"
-    },
-    {
-      "id": "J0169",
-      "title": "中班 派車調度主任",
-      "region": "桃園市",
-      "area": "楊梅區",
-      "salary": "月薪55,000",
-      "shift": "中班",
-      "url": "https://careersun.github.io/job365map/jobs/J0169.html"
-    },
-    {
-      "id": "J0168",
-      "title": "中班 資深倉管員",
-      "region": "桃園市",
-      "area": "觀音區",
-      "salary": "月薪50,000",
-      "shift": "中班",
-      "url": "https://careersun.github.io/job365map/jobs/J0168.html"
-    },
-    {
-      "id": "J0167",
-      "title": "夜班倉儲組長",
-      "region": "桃園市",
-      "area": "觀音區",
-      "salary": "月薪53,000",
-      "shift": "晚班",
-      "url": "https://careersun.github.io/job365map/jobs/J0167.html"
     }
   ]
 }
