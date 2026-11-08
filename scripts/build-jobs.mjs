@@ -327,9 +327,14 @@ async function loadRows() {
   return parseCsv(text);
 }
 
+// 職缺頁／Google 求職用的職稱：拿掉裝飾符號與表情符號（Google 規範職稱只放職稱本身）
+const cleanTitle = (t) => String(t || "")
+  .replace(/[\p{Extended_Pictographic}\u2600-\u27BF\u2B00-\u2BFF\u25A0-\u25FF\uFE0F\u200D]/gu, "")
+  .replace(/\s{2,}/g, " ").trim() || String(t || "").trim();
+
 // 地圖的單一職缺分享網址（與 index.html 的 jobShareUrl 規則相同）
 const mapJobUrl = (job) =>
-  `${CONFIG.SITE_URL}/?job=${encodeURIComponent(`${job.industry}_${job.title}`.replace(/\s+/g, ""))}`;
+  `${CONFIG.SITE_URL}/?job=${encodeURIComponent(`${job.industry}_${job.rawTitle ?? job.title}`.replace(/\s+/g, ""))}`;
 
 // ---------------- 4. 產生頁面 ----------------
 function buildJsonLd(job) {
@@ -605,7 +610,8 @@ async function main() {
   for (const row of rows) {
     const job = {
       id: jobId(row),
-      title: pick(row, "title"),
+      title: cleanTitle(pick(row, "title")),
+      rawTitle: pick(row, "title"), // 地圖分享網址要用原始職稱比對
       company: pick(row, "company"),
       address: pick(row, "address"),
       industry: pick(row, "industry"),
