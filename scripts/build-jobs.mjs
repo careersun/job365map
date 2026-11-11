@@ -256,7 +256,8 @@ const nl2br = (s) => esc(s).replace(/\r?\n/g, "<br>");
 
 // 頁尾：母公司
 const siteFooter = () => `<footer class="site-foot">
-  <p>JOB365 為 <a href="${CONFIG.PARENT.url}" target="_blank" rel="noopener" data-ga="parent_site_click">${CONFIG.PARENT.name}</a> 旗下團隊</p>
+  <p>JOB365 中基層獵才為 <a href="${CONFIG.PARENT.url}" target="_blank" rel="noopener" data-ga="parent_site_click">${CONFIG.PARENT.name}</a> 旗下團隊</p>
+  <p style="font-size:.72rem">日玖國際股份有限公司・勞動部私立就業服務機構許可證字號 2024・在地超過 30 年</p>
 </footer>`;
 const footerGa = () => CONFIG.GA4_ID ? `<script>document.querySelectorAll(".site-foot a[data-ga]").forEach(function(a){a.addEventListener("click",function(){gtag("event",a.dataset.ga,{source:location.pathname.indexOf("/jobs/")>-1?"job_page":"site"});});});</script>` : "";
 
@@ -362,7 +363,7 @@ function buildJsonLd(job) {
       name: job.company || CONFIG.ORG.name,
       sameAs: CONFIG.ORG.url,
       logo: CONFIG.ORG.logo,
-      parentOrganization: { "@type": "Organization", name: CONFIG.PARENT.name, url: CONFIG.PARENT.url },
+      parentOrganization: { "@type": "Organization", name: CONFIG.PARENT.name, legalName: "日玖國際股份有限公司", taxID: "86424581", foundingDate: "1991-12-13", url: CONFIG.PARENT.url },
     },
     jobLocation: { "@type": "Place", address: parseAddress(job.address) },
     directApply: false,
