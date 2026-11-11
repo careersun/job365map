@@ -13,7 +13,7 @@ import crypto from "node:crypto";
 // ---------------- 1. 基本設定（請依實際狀況修改） ----------------
 const CONFIG = {
   // GitHub Pages 網址，結尾不要加斜線
-  SITE_URL: (process.env.SITE_URL || "https://careersun.github.io/job365map").replace(/\/$/, ""),
+  SITE_URL: (process.env.SITE_URL || "https://job365hire.com.tw/job365map").replace(/\/$/, ""),
   // 跟地圖讀同一份試算表（需維持「知道連結的任何人皆可檢視」）
   SHEET_CSV_URL: process.env.SHEET_CSV_URL ||
     "https://docs.google.com/spreadsheets/d/1D9sqdzSZGe8Cpo-XqZKYndN5zW2WR9seazndqrw1cog/gviz/tq?tqx=out:csv&gid=0",
@@ -28,8 +28,8 @@ const CONFIG = {
 
   ORG: {
     name: "日玖國際 JOB365",
-    url: "https://careersun.github.io/job365map/",
-    logo: "https://careersun.github.io/job365map/favicon-192.png", // 正方形、至少 112x112
+    url: "https://job365hire.com.tw/job365map/",
+    logo: "https://job365hire.com.tw/job365map/favicon-192.png", // 正方形、至少 112x112
   },
   // 母公司
   PARENT: {
