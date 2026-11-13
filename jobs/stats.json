@@ -1,6 +1,7 @@
 {
   "updated": "2026-11-13",
   "open": 187,
+  "total": 190,
   "new30": 26,
   "monthly": [
     {
@@ -66,6 +67,10 @@
       "n": 5
     },
     {
+      "name": "連鎖補習班",
+      "n": 4
+    },
+    {
       "name": "運輸設備租賃業",
       "n": 4
     },
@@ -107,10 +112,6 @@
     },
     {
       "name": "其他行業",
-      "n": 1
-    },
-    {
-      "name": "連鎖補習班",
       "n": 1
     },
     {
@@ -212,6 +213,50 @@
       ]
     },
     {
+      "name": "新竹市",
+      "n": 30,
+      "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-city.html",
+      "industries": [
+        {
+          "name": "半導體",
+          "n": 14
+        },
+        {
+          "name": "製造業",
+          "n": 4
+        },
+        {
+          "name": "連鎖補習班",
+          "n": 3
+        },
+        {
+          "name": "工程相關",
+          "n": 2
+        },
+        {
+          "name": "半導體業",
+          "n": 2
+        }
+      ],
+      "latest": [
+        {
+          "title": "便服作業員 周休二日",
+          "area": "香山區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0182.html"
+        },
+        {
+          "title": "二二夜 駐廠設備人員",
+          "area": "東區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0174.html"
+        },
+        {
+          "title": "常日班 駐廠設備人員",
+          "area": "東區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0173.html"
+        }
+      ]
+    },
+    {
       "name": "台北市",
       "n": 30,
       "url": "https://job365hire.com.tw/job365map/jobs/area/taipei.html",
@@ -252,50 +297,6 @@
           "title": "3C品牌專賣 門市人員",
           "area": "信義區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0179.html"
-        }
-      ]
-    },
-    {
-      "name": "新竹市",
-      "n": 27,
-      "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-city.html",
-      "industries": [
-        {
-          "name": "半導體",
-          "n": 14
-        },
-        {
-          "name": "製造業",
-          "n": 4
-        },
-        {
-          "name": "工程相關",
-          "n": 2
-        },
-        {
-          "name": "半導體業",
-          "n": 2
-        },
-        {
-          "name": "餐飲業",
-          "n": 1
-        }
-      ],
-      "latest": [
-        {
-          "title": "便服作業員 周休二日",
-          "area": "香山區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0182.html"
-        },
-        {
-          "title": "二二夜 駐廠設備人員",
-          "area": "東區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0174.html"
-        },
-        {
-          "title": "常日班 駐廠設備人員",
-          "area": "東區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0173.html"
         }
       ]
     },
