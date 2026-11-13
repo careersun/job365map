@@ -606,6 +606,7 @@ async function main() {
   if (!hasStatusCol) console.warn("⚠ 找不到「狀態」欄位：所有職缺都會被視為招募中。建議在試算表新增「狀態」欄。");
 
   const open = [];
+  const all = []; // 全部職缺（含停招），網站顯示的職缺總數用這個
   const posted = []; // 每筆職缺（含已停招）的刊登日期，用來算「近 30 天新增」
   const seen = new Set();
   const warnings = [];
@@ -645,6 +646,7 @@ async function main() {
 
     fs.writeFileSync(path.join(outDir, `${job.id}.html`), pageHtml(job, { closed }));
     state[job.id] = { ...st, lastSeen: today(), closed, title: job.title };
+    all.push(job);
     if (!closed) open.push(job);
   }
 
@@ -685,16 +687,18 @@ async function main() {
   fs.writeFileSync(path.join(outDir, "stats.json"), JSON.stringify({
     updated: today(),
     open: open.length,
+    total: all.length, // 職缺總數（含停招）
     new30: posted.filter((d) => d && d >= addDays(today(), -30)).length,
     // 每月「累計」合作職缺數（含已停招），呈現成長趨勢
     monthly: (() => { let sum = 0; return Object.entries(posted.reduce((m, d) => { if (d) m[d.slice(0, 7)] = (m[d.slice(0, 7)] || 0) + 1; return m; }, {}))
       .sort((a, b) => a[0].localeCompare(b[0])).map(([month, n]) => ({ month, n: (sum += n) })).slice(-6); })(),
-    industries: tally(open.map((j) => j.industry)),
-    regions: tally(open.map(regionOf)).map((r) => {
+    industries: tally(all.map((j) => j.industry)),
+    regions: tally(all.map(regionOf)).map((r) => {
       const inR = open.filter((j) => regionOf(j) === r.name);
+      const inAll = all.filter((j) => regionOf(j) === r.name);
       return { ...r, url: areaLinks.some((a) => a.name === r.name) ? `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/area/${REGION_SLUGS[r.name]}.html` : "",
         // 給 /hire/ 地區頁顯示：該地區主要產業與最新職缺
-        industries: tally(inR.map((j) => j.industry)).slice(0, 5),
+        industries: tally(inAll.map((j) => j.industry)).slice(0, 5),
         latest: [...inR].sort((x, y) => (y.datePosted || "").localeCompare(x.datePosted || "") || y.id.localeCompare(x.id)).slice(0, 3)
           .map((j) => ({ title: j.title, area: localityOf(j), url: `${CONFIG.SITE_URL}/${CONFIG.OUT_DIR}/${j.id}.html` })) };
     }),

@@ -1253,8 +1253,7 @@ async function loadFromSheet(url){
     console.info('buildHeaderMap result:', map);
     if(!map.company || !map.title) throw new Error('找不到 company 或 title 欄位,請檢查第一列欄位名稱');
 
-    const jobs = parsedCsv.data.map((row,i)=> rowToJob(row, map, i)).filter(j=> j.company && j.title)
-      .filter((j,i)=> !CLOSED_WORDS.some(w=> String(parsedCsv.data[j._row-2]['狀態'] || '').toLowerCase().includes(w))); // 停招中的職缺不顯示（與職缺頁、首頁統計一致）
+    const jobs = parsedCsv.data.map((row,i)=> rowToJob(row, map, i)).filter(j=> j.company && j.title);
     if(!jobs.length) throw new Error('每一列都缺少公司或職稱,請檢查資料內容');
 
     DATA = jobs;
@@ -1299,7 +1298,6 @@ async function loadFromSheet(url){
    https://你的網域/?sheet=https://docs.google.com/spreadsheets/d/xxxx/edit
    一般顧客不會知道也不會用到這個參數。
 ------------------------------------------- */
-const CLOSED_WORDS = ['停招','停止','關閉','已滿','結束','下架','暫停','close','closed'];
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1D9sqdzSZGe8Cpo-XqZKYndN5zW2WR9seazndqrw1cog/edit?usp=sharing'
 const CONTACT_LINK = 'https://lin.ee/oX4esly'
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywsF3p4vSjL5pe_RP43T8Ma3amEjCighuxplwSV3AQaLFbNQ8deM8uPzXT6pKZbZvA/exec'; // 跟後台共用同一個 Apps Script,用來把真實點閱數寫回試算表
