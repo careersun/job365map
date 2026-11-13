@@ -47,7 +47,7 @@
   :root{
     --bg:#12151C; --bg-panel:#191E27; --bg-panel-hi:#212838; --border:#2A3140;
     --text:#ECEDEF; --text-muted:#8B93A1; --text-faint:#5B6273;
-    --gold:#F2A93D; --teal:#4FBFAE; --coral:#E8674A; --periwinkle:#7C93F2; --violet:#C77DFF;
+    --gold:#D07B4D; --teal:#4FBFAE; --coral:#E8674A; --periwinkle:#7C93F2; --violet:#C77DFF;
     --font-display:'Space Grotesk',sans-serif; --font-mono:'JetBrains Mono',monospace; --font-body:'Inter',sans-serif;
   }
   *{box-sizing:border-box;}
@@ -155,7 +155,7 @@
   .badge--remote{background:rgba(79,191,174,.15);color:var(--teal);}
   .badge--overseas{background:rgba(124,147,242,.15);color:var(--periwinkle);}
   .badge--type{background:rgba(139,147,161,.15);color:var(--text-muted);}
-  .badge--new{background:rgba(242,169,61,.15);color:var(--gold);}
+  .badge--new{background:rgba(208,123,77,.15);color:var(--gold);}
   .card__title{font-family:var(--font-display);font-size:17.5px;font-weight:700;margin:0 0 5px;line-height:1.4;}
   .card__company-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
   .card__company{font-size:11.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:0;}
@@ -186,7 +186,7 @@
   .map-head p{margin:0;font-size:12px;color:var(--text-faint);font-family:var(--font-mono);}
   #map{height:460px;border-radius:14px;border:1px solid var(--border);position:relative;z-index:1;isolation:isolate;}
   @keyframes markerPulse{
-    0%{ box-shadow:0 0 0 0 var(--pulse-color, rgba(242,169,61,.6)); }
+    0%{ box-shadow:0 0 0 0 var(--pulse-color, rgba(208,123,77,.6)); }
     70%{ box-shadow:0 0 0 14px transparent; }
     100%{ box-shadow:0 0 0 0 transparent; }
   }
@@ -276,7 +276,7 @@
     .sheet-panel__row{flex-direction:column;}
 
     /* 篩選浮動按鈕 */
-    .filter-fab{display:flex;align-items:center;gap:7px;position:fixed;right:18px;bottom:18px;z-index:45;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:13px 20px;font-family:var(--font-display);font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(242,169,61,.4);cursor:pointer;transition:opacity .15s, visibility .15s;}
+    .filter-fab{display:flex;align-items:center;gap:7px;position:fixed;right:18px;bottom:18px;z-index:45;background:var(--gold);color:#1A1207;border:none;border-radius:999px;padding:13px 20px;font-family:var(--font-display);font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(208,123,77,.4);cursor:pointer;transition:opacity .15s, visibility .15s;}
     .back-to-top{bottom:78px;padding:10px 16px;font-size:12.5px;}
     .filter-fab.is-hidden{opacity:0;visibility:hidden;pointer-events:none;}
     .filter-fab__badge{background:#1A1207;color:var(--gold);border-radius:999px;font-size:11px;font-family:var(--font-mono);padding:1px 7px;min-width:16px;text-align:center;}
@@ -335,7 +335,7 @@
 
 <nav class="nav">
   <div class="nav__logo">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8z" stroke="#F2A93D" stroke-width="1.6"/><circle cx="12" cy="10" r="2.6" fill="#F2A93D"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8z" stroke="#D07B4D" stroke-width="1.6"/><circle cx="12" cy="10" r="2.6" fill="#D07B4D"/></svg>
     JOB365·職缺地圖
   </div>
   <div class="nav__links">
@@ -1253,7 +1253,8 @@ async function loadFromSheet(url){
     console.info('buildHeaderMap result:', map);
     if(!map.company || !map.title) throw new Error('找不到 company 或 title 欄位,請檢查第一列欄位名稱');
 
-    const jobs = parsedCsv.data.map((row,i)=> rowToJob(row, map, i)).filter(j=> j.company && j.title);
+    const jobs = parsedCsv.data.map((row,i)=> rowToJob(row, map, i)).filter(j=> j.company && j.title)
+      .filter((j,i)=> !CLOSED_WORDS.some(w=> String(parsedCsv.data[j._row-2]['狀態'] || '').toLowerCase().includes(w))); // 停招中的職缺不顯示（與職缺頁、首頁統計一致）
     if(!jobs.length) throw new Error('每一列都缺少公司或職稱,請檢查資料內容');
 
     DATA = jobs;
@@ -1298,6 +1299,7 @@ async function loadFromSheet(url){
    https://你的網域/?sheet=https://docs.google.com/spreadsheets/d/xxxx/edit
    一般顧客不會知道也不會用到這個參數。
 ------------------------------------------- */
+const CLOSED_WORDS = ['停招','停止','關閉','已滿','結束','下架','暫停','close','closed'];
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1D9sqdzSZGe8Cpo-XqZKYndN5zW2WR9seazndqrw1cog/edit?usp=sharing'
 const CONTACT_LINK = 'https://lin.ee/oX4esly'
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywsF3p4vSjL5pe_RP43T8Ma3amEjCighuxplwSV3AQaLFbNQ8deM8uPzXT6pKZbZvA/exec'; // 跟後台共用同一個 Apps Script,用來把真實點閱數寫回試算表
@@ -1361,7 +1363,7 @@ if(activeSheetUrl){
   const colors = new Float32Array(dotCount*3);
   // 以冷色系(青綠、藍紫)為主,跟深藍背景協調;金色只當稀疏點綴,不要五色平均散佈太花
   const mainPalette = [[0x4F,0xBF,0xAE],[0x7C,0x93,0xF2],[0x5F,0xA8,0xD3],[0x4F,0xBF,0xAE],[0x7C,0x93,0xF2]];
-  const accentColor = [0xF2,0xA9,0x3D];
+  const accentColor = [0xD0,0x7B,0x4D];
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   for(let i=0;i<dotCount;i++){
     const y = 1 - (i/(dotCount-1))*2;
