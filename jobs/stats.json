@@ -1,8 +1,8 @@
 {
   "updated": "2026-11-16",
-  "open": 187,
-  "total": 190,
-  "new30": 21,
+  "open": 188,
+  "total": 191,
+  "new30": 22,
   "monthly": [
     {
       "month": "2026-07",
@@ -22,7 +22,7 @@
     },
     {
       "month": "2026-11",
-      "n": 190
+      "n": 191
     }
   ],
   "industries": [
@@ -36,7 +36,7 @@
     },
     {
       "name": "製造業",
-      "n": 28
+      "n": 29
     },
     {
       "name": "銷售業",
@@ -125,6 +125,50 @@
   ],
   "regions": [
     {
+      "name": "桃園市",
+      "n": 37,
+      "url": "https://job365hire.com.tw/job365map/jobs/area/taoyuan.html",
+      "industries": [
+        {
+          "name": "製造業",
+          "n": 14
+        },
+        {
+          "name": "銷售業",
+          "n": 3
+        },
+        {
+          "name": "進出口報關",
+          "n": 3
+        },
+        {
+          "name": "其他醫療與保健服務業",
+          "n": 3
+        },
+        {
+          "name": "科技業",
+          "n": 2
+        }
+      ],
+      "latest": [
+        {
+          "title": "進出口行政專員",
+          "area": "桃園區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0191.html"
+        },
+        {
+          "title": "觀音 工地主任",
+          "area": "觀音區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0188.html"
+        },
+        {
+          "title": "桃園 會計人員",
+          "area": "桃園區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0187.html"
+        }
+      ]
+    },
+    {
       "name": "新竹縣",
       "n": 37,
       "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-county.html",
@@ -152,63 +196,19 @@
       ],
       "latest": [
         {
-          "title": "生管工程師 周休二日",
-          "area": "竹北市",
-          "url": "https://job365hire.com.tw/job365map/jobs/j9fda64dcd7.html"
-        },
-        {
           "title": "客服維修工程師 周休二日",
           "area": "竹北市",
-          "url": "https://job365hire.com.tw/job365map/jobs/j43d39aa79e.html"
+          "url": "https://job365hire.com.tw/job365map/jobs/J0190.html"
+        },
+        {
+          "title": "生管工程師 周休二日",
+          "area": "竹北市",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0189.html"
         },
         {
           "title": "港式餐廳 店長",
           "area": "竹北市",
           "url": "https://job365hire.com.tw/job365map/jobs/J0176.html"
-        }
-      ]
-    },
-    {
-      "name": "桃園市",
-      "n": 36,
-      "url": "https://job365hire.com.tw/job365map/jobs/area/taoyuan.html",
-      "industries": [
-        {
-          "name": "製造業",
-          "n": 13
-        },
-        {
-          "name": "銷售業",
-          "n": 3
-        },
-        {
-          "name": "進出口報關",
-          "n": 3
-        },
-        {
-          "name": "其他醫療與保健服務業",
-          "n": 3
-        },
-        {
-          "name": "科技業",
-          "n": 2
-        }
-      ],
-      "latest": [
-        {
-          "title": "觀音 工地主任",
-          "area": "觀音區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0188.html"
-        },
-        {
-          "title": "桃園 會計人員",
-          "area": "桃園區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0187.html"
-        },
-        {
-          "title": "中班 派車調度主任",
-          "area": "楊梅區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0169.html"
         }
       ]
     },
@@ -588,7 +588,7 @@
     },
     {
       "name": "內勤",
-      "n": 16
+      "n": 17
     },
     {
       "name": "管理職",
@@ -677,22 +677,31 @@
   ],
   "latest": [
     {
-      "id": "j9fda64dcd7",
-      "title": "生管工程師 周休二日",
-      "region": "新竹縣",
-      "area": "竹北市",
-      "salary": "月薪40,000~55,000",
+      "id": "J0191",
+      "title": "進出口行政專員",
+      "region": "桃園市",
+      "area": "桃園區",
+      "salary": "月薪35,000~40,000起",
       "shift": "日班",
-      "url": "https://job365hire.com.tw/job365map/jobs/j9fda64dcd7.html"
+      "url": "https://job365hire.com.tw/job365map/jobs/J0191.html"
     },
     {
-      "id": "j43d39aa79e",
+      "id": "J0190",
       "title": "客服維修工程師 周休二日",
       "region": "新竹縣",
       "area": "竹北市",
       "salary": "月薪42,000~55,000",
       "shift": "日班",
-      "url": "https://job365hire.com.tw/job365map/jobs/j43d39aa79e.html"
+      "url": "https://job365hire.com.tw/job365map/jobs/J0190.html"
+    },
+    {
+      "id": "J0189",
+      "title": "生管工程師 周休二日",
+      "region": "新竹縣",
+      "area": "竹北市",
+      "salary": "月薪40,000~55,000",
+      "shift": "日班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0189.html"
     },
     {
       "id": "J0188",
@@ -708,7 +717,7 @@
       "title": "桃園 會計人員",
       "region": "桃園市",
       "area": "桃園區",
-      "salary": "月薪40,000起",
+      "salary": "月薪40,000~50,000起",
       "shift": "日班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0187.html"
     },
@@ -774,15 +783,6 @@
       "salary": "面議",
       "shift": "排班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0180.html"
-    },
-    {
-      "id": "J0179",
-      "title": "3C品牌專賣 門市人員",
-      "region": "台北市",
-      "area": "信義區",
-      "salary": "月薪35,000~50,000起",
-      "shift": "排班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0179.html"
     }
   ]
 }
