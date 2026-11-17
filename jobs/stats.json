@@ -126,12 +126,16 @@
   "regions": [
     {
       "name": "桃園市",
-      "n": 37,
+      "n": 38,
       "url": "https://job365hire.com.tw/job365map/jobs/area/taoyuan.html",
       "industries": [
         {
           "name": "製造業",
           "n": 14
+        },
+        {
+          "name": "餐飲業",
+          "n": 3
         },
         {
           "name": "銷售業",
@@ -144,10 +148,6 @@
         {
           "name": "其他醫療與保健服務業",
           "n": 3
-        },
-        {
-          "name": "科技業",
-          "n": 2
         }
       ],
       "latest": [
@@ -346,11 +346,15 @@
     },
     {
       "name": "台中市",
-      "n": 12,
+      "n": 15,
       "url": "https://job365hire.com.tw/job365map/jobs/area/taichung.html",
       "industries": [
         {
           "name": "製造業",
+          "n": 3
+        },
+        {
+          "name": "建物裝修及裝潢業",
           "n": 3
         },
         {
@@ -364,10 +368,6 @@
         {
           "name": "技職",
           "n": 2
-        },
-        {
-          "name": "美業",
-          "n": 1
         }
       ],
       "latest": [
@@ -377,14 +377,14 @@
           "url": "https://job365hire.com.tw/job365map/jobs/J0192.html"
         },
         {
-          "title": "Scubber 設備工程師",
-          "area": "后里區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0177.html"
+          "title": "(高考) 消防安檢工程師",
+          "area": "清水區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0186.html"
         },
         {
-          "title": "便利商店全職 早中夜皆有 固定班 (大甲)",
-          "area": "大甲區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0150.html"
+          "title": "(高考) 消防設備士",
+          "area": "清水區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0185.html"
         }
       ]
     },
@@ -733,8 +733,8 @@
     {
       "id": "J0186",
       "title": "(高考) 消防安檢工程師",
-      "region": "",
-      "area": "台中",
+      "region": "台中市",
+      "area": "清水區",
       "salary": "月薪35,000~53,000起",
       "shift": "日班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0186.html"
@@ -742,8 +742,8 @@
     {
       "id": "J0185",
       "title": "(高考) 消防設備士",
-      "region": "",
-      "area": "台中",
+      "region": "台中市",
+      "area": "清水區",
       "salary": "月薪40,000~60,000起",
       "shift": "日班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0185.html"
@@ -751,8 +751,8 @@
     {
       "id": "J0184",
       "title": "消防安全設備 業務工程師",
-      "region": "",
-      "area": "台中",
+      "region": "台中市",
+      "area": "清水區",
       "salary": "月薪36,000起",
       "shift": "日班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0184.html"
@@ -760,8 +760,8 @@
     {
       "id": "J0183",
       "title": "桃園台茂 餐飲全職(自選內外場)",
-      "region": "",
-      "area": "桃園",
+      "region": "桃園市",
+      "area": "蘆竹區",
       "salary": "月薪40,000起",
       "shift": "排班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0183.html"
