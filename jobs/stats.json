@@ -1,8 +1,8 @@
 {
-  "updated": "2026-11-16",
-  "open": 188,
-  "total": 191,
-  "new30": 22,
+  "updated": "2026-11-17",
+  "open": 189,
+  "total": 192,
+  "new30": 23,
   "monthly": [
     {
       "month": "2026-07",
@@ -22,7 +22,7 @@
     },
     {
       "month": "2026-11",
-      "n": 191
+      "n": 192
     }
   ],
   "industries": [
@@ -36,7 +36,7 @@
     },
     {
       "name": "製造業",
-      "n": 29
+      "n": 30
     },
     {
       "name": "銷售業",
@@ -346,15 +346,15 @@
     },
     {
       "name": "台中市",
-      "n": 11,
+      "n": 12,
       "url": "https://job365hire.com.tw/job365map/jobs/area/taichung.html",
       "industries": [
         {
-          "name": "銷售業",
-          "n": 2
+          "name": "製造業",
+          "n": 3
         },
         {
-          "name": "製造業",
+          "name": "銷售業",
           "n": 2
         },
         {
@@ -372,6 +372,11 @@
       ],
       "latest": [
         {
+          "title": "日班 生產作業員 便服ok",
+          "area": "神岡區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0192.html"
+        },
+        {
           "title": "Scubber 設備工程師",
           "area": "后里區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0177.html"
@@ -380,11 +385,6 @@
           "title": "便利商店全職 早中夜皆有 固定班 (大甲)",
           "area": "大甲區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0150.html"
-        },
-        {
-          "title": "高級護膚品牌 銷售業務",
-          "area": "北區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0142.html"
         }
       ]
     },
@@ -572,7 +572,7 @@
   "categories": [
     {
       "name": "技術員",
-      "n": 34
+      "n": 35
     },
     {
       "name": "餐飲人員",
@@ -677,6 +677,15 @@
   ],
   "latest": [
     {
+      "id": "J0192",
+      "title": "日班 生產作業員 便服ok",
+      "region": "台中市",
+      "area": "神岡區",
+      "salary": "月薪29,500~34,000起",
+      "shift": "日班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0192.html"
+    },
+    {
       "id": "J0191",
       "title": "進出口行政專員",
       "region": "桃園市",
@@ -774,15 +783,6 @@
       "salary": "月薪38,000~60,000起",
       "shift": "日班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0181.html"
-    },
-    {
-      "id": "J0180",
-      "title": "3C品牌專賣 門市店長",
-      "region": "台北市",
-      "area": "信義區",
-      "salary": "面議",
-      "shift": "排班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0180.html"
     }
   ]
 }
