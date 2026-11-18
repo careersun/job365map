@@ -1,8 +1,8 @@
 {
-  "updated": "2026-11-17",
-  "open": 189,
-  "total": 192,
-  "new30": 23,
+  "updated": "2026-11-18",
+  "open": 191,
+  "total": 194,
+  "new30": 25,
   "monthly": [
     {
       "month": "2026-07",
@@ -22,7 +22,7 @@
     },
     {
       "month": "2026-11",
-      "n": 192
+      "n": 194
     }
   ],
   "industries": [
@@ -36,7 +36,7 @@
     },
     {
       "name": "製造業",
-      "n": 30
+      "n": 32
     },
     {
       "name": "銷售業",
@@ -170,7 +170,7 @@
     },
     {
       "name": "新竹縣",
-      "n": 37,
+      "n": 38,
       "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-county.html",
       "industries": [
         {
@@ -179,7 +179,7 @@
         },
         {
           "name": "製造業",
-          "n": 6
+          "n": 7
         },
         {
           "name": "餐飲業",
@@ -196,6 +196,11 @@
       ],
       "latest": [
         {
+          "title": "折床技術員 穿便服 無經驗可學",
+          "area": "竹東鎮",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0194.html"
+        },
+        {
           "title": "客服維修工程師 周休二日",
           "area": "竹北市",
           "url": "https://job365hire.com.tw/job365map/jobs/J0190.html"
@@ -204,17 +209,12 @@
           "title": "生管工程師 周休二日",
           "area": "竹北市",
           "url": "https://job365hire.com.tw/job365map/jobs/J0189.html"
-        },
-        {
-          "title": "港式餐廳 店長",
-          "area": "竹北市",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0176.html"
         }
       ]
     },
     {
       "name": "新竹市",
-      "n": 30,
+      "n": 31,
       "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-city.html",
       "industries": [
         {
@@ -223,7 +223,7 @@
         },
         {
           "name": "製造業",
-          "n": 4
+          "n": 5
         },
         {
           "name": "連鎖補習班",
@@ -240,6 +240,11 @@
       ],
       "latest": [
         {
+          "title": "機械組裝技術員 穿便服",
+          "area": "東區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0193.html"
+        },
+        {
           "title": "便服作業員 周休二日",
           "area": "香山區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0182.html"
@@ -248,11 +253,6 @@
           "title": "二二夜 駐廠設備人員",
           "area": "東區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0174.html"
-        },
-        {
-          "title": "常日班 駐廠設備人員",
-          "area": "東區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0173.html"
         }
       ]
     },
@@ -572,7 +572,7 @@
   "categories": [
     {
       "name": "技術員",
-      "n": 35
+      "n": 37
     },
     {
       "name": "餐飲人員",
@@ -677,6 +677,24 @@
   ],
   "latest": [
     {
+      "id": "J0194",
+      "title": "折床技術員 穿便服 無經驗可學",
+      "region": "新竹縣",
+      "area": "竹東鎮",
+      "salary": "月薪33,000~50,000起",
+      "shift": "日班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0194.html"
+    },
+    {
+      "id": "J0193",
+      "title": "機械組裝技術員 穿便服",
+      "region": "新竹市",
+      "area": "東區",
+      "salary": "月薪33,000~50,000起",
+      "shift": "日班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0193.html"
+    },
+    {
       "id": "J0192",
       "title": "日班 生產作業員 便服ok",
       "region": "台中市",
@@ -765,24 +783,6 @@
       "salary": "月薪40,000起",
       "shift": "排班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0183.html"
-    },
-    {
-      "id": "J0182",
-      "title": "便服作業員 周休二日",
-      "region": "新竹市",
-      "area": "香山區",
-      "salary": "月薪29,500~30,500起",
-      "shift": "日班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0182.html"
-    },
-    {
-      "id": "J0181",
-      "title": "雲端專案工程師",
-      "region": "台北市",
-      "area": "南港區",
-      "salary": "月薪38,000~60,000起",
-      "shift": "日班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0181.html"
     }
   ]
 }
