@@ -1,8 +1,8 @@
 {
   "updated": "2026-11-26",
-  "open": 191,
-  "total": 194,
-  "new30": 21,
+  "open": 194,
+  "total": 197,
+  "new30": 24,
   "monthly": [
     {
       "month": "2026-07",
@@ -22,7 +22,7 @@
     },
     {
       "month": "2026-11",
-      "n": 194
+      "n": 197
     }
   ],
   "industries": [
@@ -32,7 +32,7 @@
     },
     {
       "name": "餐飲業",
-      "n": 34
+      "n": 35
     },
     {
       "name": "製造業",
@@ -40,7 +40,7 @@
     },
     {
       "name": "銷售業",
-      "n": 18
+      "n": 20
     },
     {
       "name": "技職",
@@ -125,6 +125,50 @@
   ],
   "regions": [
     {
+      "name": "新竹縣",
+      "n": 39,
+      "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-county.html",
+      "industries": [
+        {
+          "name": "半導體",
+          "n": 17
+        },
+        {
+          "name": "製造業",
+          "n": 7
+        },
+        {
+          "name": "餐飲業",
+          "n": 6
+        },
+        {
+          "name": "科技業",
+          "n": 4
+        },
+        {
+          "name": "營造業",
+          "n": 1
+        }
+      ],
+      "latest": [
+        {
+          "title": "精品美容銷售顧問 竹北大遠百",
+          "area": "竹北市",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0196.html"
+        },
+        {
+          "title": "折床技術員 穿便服 無經驗可學",
+          "area": "竹東鎮",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0194.html"
+        },
+        {
+          "title": "客服維修工程師 周休二日",
+          "area": "竹北市",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0190.html"
+        }
+      ]
+    },
+    {
       "name": "桃園市",
       "n": 38,
       "url": "https://job365hire.com.tw/job365map/jobs/area/taoyuan.html",
@@ -169,52 +213,8 @@
       ]
     },
     {
-      "name": "新竹縣",
-      "n": 38,
-      "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-county.html",
-      "industries": [
-        {
-          "name": "半導體",
-          "n": 17
-        },
-        {
-          "name": "製造業",
-          "n": 7
-        },
-        {
-          "name": "餐飲業",
-          "n": 6
-        },
-        {
-          "name": "科技業",
-          "n": 4
-        },
-        {
-          "name": "營造業",
-          "n": 1
-        }
-      ],
-      "latest": [
-        {
-          "title": "折床技術員 穿便服 無經驗可學",
-          "area": "竹東鎮",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0194.html"
-        },
-        {
-          "title": "客服維修工程師 周休二日",
-          "area": "竹北市",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0190.html"
-        },
-        {
-          "title": "生管工程師 周休二日",
-          "area": "竹北市",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0189.html"
-        }
-      ]
-    },
-    {
       "name": "新竹市",
-      "n": 31,
+      "n": 32,
       "url": "https://job365hire.com.tw/job365map/jobs/area/hsinchu-city.html",
       "industries": [
         {
@@ -234,11 +234,16 @@
           "n": 2
         },
         {
-          "name": "半導體業",
+          "name": "銷售業",
           "n": 2
         }
       ],
       "latest": [
+        {
+          "title": "高級美容保養銷售顧問 新竹大遠百",
+          "area": "東區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0195.html"
+        },
         {
           "title": "機械組裝技術員 穿便服",
           "area": "東區",
@@ -248,22 +253,17 @@
           "title": "便服作業員 周休二日",
           "area": "香山區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0182.html"
-        },
-        {
-          "title": "二二夜 駐廠設備人員",
-          "area": "東區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0174.html"
         }
       ]
     },
     {
       "name": "台北市",
-      "n": 30,
+      "n": 31,
       "url": "https://job365hire.com.tw/job365map/jobs/area/taipei.html",
       "industries": [
         {
           "name": "餐飲業",
-          "n": 13
+          "n": 14
         },
         {
           "name": "軟體與網路相關",
@@ -284,6 +284,11 @@
       ],
       "latest": [
         {
+          "title": "日式洋食 西餐廚師",
+          "area": "信義區",
+          "url": "https://job365hire.com.tw/job365map/jobs/J0197.html"
+        },
+        {
           "title": "雲端專案工程師",
           "area": "南港區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0181.html"
@@ -292,11 +297,6 @@
           "title": "3C品牌專賣 門市店長",
           "area": "信義區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0180.html"
-        },
-        {
-          "title": "3C品牌專賣 門市人員",
-          "area": "信義區",
-          "url": "https://job365hire.com.tw/job365map/jobs/J0179.html"
         }
       ]
     },
@@ -495,7 +495,7 @@
         },
         {
           "title": "高雄漢神 連鎖汽車美容 學徒",
-          "area": "漢神區",
+          "area": "前金區",
           "url": "https://job365hire.com.tw/job365map/jobs/J0113.html"
         }
       ]
@@ -576,11 +576,11 @@
     },
     {
       "name": "餐飲人員",
-      "n": 25
+      "n": 26
     },
     {
       "name": "銷售人員",
-      "n": 20
+      "n": 22
     },
     {
       "name": "工程師",
@@ -677,6 +677,33 @@
   ],
   "latest": [
     {
+      "id": "J0197",
+      "title": "日式洋食 西餐廚師",
+      "region": "台北市",
+      "area": "信義區",
+      "salary": "月薪41,000~43,000",
+      "shift": "排班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0197.html"
+    },
+    {
+      "id": "J0196",
+      "title": "精品美容銷售顧問 竹北大遠百",
+      "region": "新竹縣",
+      "area": "竹北市",
+      "salary": "月薪50,000~70,000起",
+      "shift": "排班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0196.html"
+    },
+    {
+      "id": "J0195",
+      "title": "高級美容保養銷售顧問 新竹大遠百",
+      "region": "新竹市",
+      "area": "東區",
+      "salary": "月薪50,000~70,000起",
+      "shift": "排班",
+      "url": "https://job365hire.com.tw/job365map/jobs/J0195.html"
+    },
+    {
       "id": "J0194",
       "title": "折床技術員 穿便服 無經驗可學",
       "region": "新竹縣",
@@ -756,33 +783,6 @@
       "salary": "月薪35,000~53,000起",
       "shift": "日班",
       "url": "https://job365hire.com.tw/job365map/jobs/J0186.html"
-    },
-    {
-      "id": "J0185",
-      "title": "(高考) 消防設備士",
-      "region": "台中市",
-      "area": "清水區",
-      "salary": "月薪40,000~60,000起",
-      "shift": "日班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0185.html"
-    },
-    {
-      "id": "J0184",
-      "title": "消防安全設備 業務工程師",
-      "region": "台中市",
-      "area": "清水區",
-      "salary": "月薪36,000起",
-      "shift": "日班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0184.html"
-    },
-    {
-      "id": "J0183",
-      "title": "桃園台茂 餐飲全職(自選內外場)",
-      "region": "桃園市",
-      "area": "蘆竹區",
-      "salary": "月薪40,000起",
-      "shift": "排班",
-      "url": "https://job365hire.com.tw/job365map/jobs/J0183.html"
     }
   ]
 }
