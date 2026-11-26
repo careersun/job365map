@@ -365,7 +365,7 @@ function buildJsonLd(job) {
       logo: CONFIG.ORG.logo,
       parentOrganization: { "@type": "Organization", name: CONFIG.PARENT.name, legalName: "日玖國際股份有限公司", taxID: "86424581", foundingDate: "1991-12-13", url: CONFIG.PARENT.url },
     },
-    jobLocation: { "@type": "Place", address: parseAddress(job.address) },
+    jobLocation: { "@type": "Place", address: { ...parseAddress(job.address), ...(job.postalCode && { postalCode: job.postalCode }) } },
     directApply: false,
   };
   const salary = parseSalary(job.salaryText);
@@ -595,6 +595,11 @@ ${urls.map((u) => `  <url><loc>${esc(u.loc)}</loc><lastmod>${u.lastmod}</lastmod
 `;
 }
 
+const JOB_ADDRESS_OVERRIDES = {
+  // 原始試算表以「高雄市漢神區」標示；職缺位於漢神百貨本館。
+  J0113: { address: "高雄市前金區成功一路266-1號", postalCode: "801747" },
+};
+
 // ---------------- 5. 主流程 ----------------
 async function main() {
   const rows = await loadRows();
@@ -629,6 +634,11 @@ async function main() {
       benefits: pick(row, "benefits"),
       link: /^https?:\/\//.test(pick(row, "link")) ? pick(row, "link") : "",
     };
+    const addressOverride = JOB_ADDRESS_OVERRIDES[job.id];
+    if (addressOverride) {
+      job.address = addressOverride.address;
+      job.postalCode = addressOverride.postalCode;
+    }
     if (!job.title || !job.address) { warnings.push(`略過（缺職稱或地址）：${JSON.stringify(row).slice(0, 80)}`); continue; }
     if (seen.has(job.id)) { warnings.push(`重複的職缺 ID：${job.id}`); continue; }
     seen.add(job.id);
