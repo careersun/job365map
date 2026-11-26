@@ -1193,7 +1193,9 @@ function parseBool(v){
 
 function rowToJob(row, map, idx){
   const get = k => map[k] ? String(row[map[k]] ?? '').trim() : '';
-  const city = get('city');
+  const jobNo = String(row['職缺編號'] ?? '').trim();
+  const rawCity = get('city');
+  const city = jobNo === 'J0113' && /漢神/.test(rawCity) ? '高雄市前金區' : rawCity;
   let lat = parseFloat(get('lat').replace(/,/g,'')) || NaN;
   let lng = parseFloat(get('lng').replace(/,/g,'')) || NaN;
   if((isNaN(lat) || isNaN(lng)) && findCityCoords(city)){ [lat,lng] = findCityCoords(city); }
@@ -1201,7 +1203,7 @@ function rowToJob(row, map, idx){
   const updatedDate = updatedRaw ? new Date(updatedRaw) : new Date();
   return {
     id: idx+1,
-    jobNo: String(row['職缺編號'] ?? '').trim(), // 對應 jobs/<職缺編號>.html 職缺頁
+    jobNo, // 對應 jobs/<職缺編號>.html 職缺頁
     _row: idx+2, // 對應試算表實際列號(第1列是標題),寫回點閱數/應徵次數時要用
     company: get('company') || '',
     title: get('title') || '',
